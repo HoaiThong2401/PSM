@@ -155,14 +155,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               size="sm"
               onClick={() => setLanguage('vi')}
             >
-              🇻🇳 Tiếng Việt
+              🇻🇳 VN
             </Button>
             <Button
               variant={language === 'en' ? 'primary' : 'outline'}
               size="sm"
               onClick={() => setLanguage('en')}
             >
-              🇬🇧 English
+              🇬🇧 EN
             </Button>
           </div>
         </div>

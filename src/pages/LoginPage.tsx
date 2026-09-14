@@ -67,9 +67,9 @@ export const LoginPage: React.FC = () => {
       <div className="absolute top-4 right-4 z-20">
         <button
           onClick={toggleLanguage}
-          className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 border border-slate-200/80 dark:border-slate-700/80 shadow-xs"
+          className="px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 border border-slate-200/80 dark:border-slate-700/80 shadow-xs"
         >
-          <span>{isVi ? '🇻🇳 Tiếng Việt' : '🇬🇧 English'}</span>
+          <span>{isVi ? '🇻🇳 VN' : '🇬🇧 EN'}</span>
         </button>
       </div>
 
@@ -160,8 +160,8 @@ export const LoginPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-3.5">
             {authMode === 'register' && (
               <Input
-                label="Họ và tên"
-                placeholder="VD: Nguyễn Văn A"
+                label={isVi ? 'Họ và tên' : 'Full Name'}
+                placeholder={isVi ? 'VD: Nguyễn Văn A' : 'e.g. John Doe'}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 leftIcon={<User className="w-4 h-4 text-slate-400" />}
@@ -180,7 +180,7 @@ export const LoginPage: React.FC = () => {
             />
 
             <Input
-              label="Mật khẩu"
+              label={isVi ? 'Mật khẩu' : 'Password'}
               type="password"
               placeholder="••••••••"
               value={password}
@@ -196,16 +196,21 @@ export const LoginPage: React.FC = () => {
               isLoading={isSubmitting || isLoading}
               className="w-full justify-center font-bold text-sm shadow-md shadow-indigo-500/20 mt-1"
             >
-              <span>{authMode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}</span>
+              <span>{authMode === 'login' ? (isVi ? 'Đăng nhập' : 'Sign In') : (isVi ? 'Tạo tài khoản' : 'Create Account')}</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </form>
 
+          {/* Centered Divider */}
           <div className="relative flex items-center justify-center my-1">
-            <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
-            <span className="bg-white dark:bg-slate-900 px-3 text-[11px] text-slate-400 dark:text-slate-500 uppercase font-semibold">
-              Hoặc
-            </span>
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-white dark:bg-slate-900 px-3 text-[11px] text-slate-400 dark:text-slate-500 uppercase font-semibold">
+                {isVi ? 'Hoặc' : 'Or'}
+              </span>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -221,7 +226,7 @@ export const LoginPage: React.FC = () => {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
               </svg>
-              <span>Đăng nhập với Google</span>
+              <span>{isVi ? 'Đăng nhập với Google' : 'Sign in with Google'}</span>
             </button>
 
             <Button
@@ -232,7 +237,7 @@ export const LoginPage: React.FC = () => {
               disabled={isLoading}
               className="w-full text-xs font-bold dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 justify-center"
             >
-              Vào trực tiếp với tài khoản Demo
+              {isVi ? 'Vào trực tiếp với tài khoản Demo' : 'Continue with Demo Account'}
             </Button>
           </div>
         </div>
