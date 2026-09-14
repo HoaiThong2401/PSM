@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { UserSettings } from '../types/settings';
+import type { UserProfile } from '../types/auth';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -7,6 +8,7 @@ import { formatNumber, parseVNDInput } from '../utils/currency';
 import { exportToJSON } from '../utils/exportUtils';
 import { useToast } from '../components/ui/Toast';
 import { PwaInstallCard } from '../components/settings/PwaInstallCard';
+import { AccountProfileCard } from '../components/settings/AccountProfileCard';
 import { isSupabaseConfigured } from '../services/supabaseClient';
 import { Sliders, Moon, Sun, Download, RotateCcw, Database, CheckCircle, AlertCircle } from 'lucide-react';
 
@@ -16,6 +18,8 @@ interface SettingsPageProps {
   onResetSettings: () => void;
   onResetSampleData: () => void;
   onClearAllData?: () => void;
+  user?: UserProfile | null;
+  onLogout?: () => void;
 }
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({
@@ -24,6 +28,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   onResetSettings,
   onResetSampleData,
   onClearAllData,
+  user,
+  onLogout,
 }) => {
   const { toast } = useToast();
   const [weekdayTarget, setWeekdayTarget] = useState(formatNumber(settings.weekdayTargetCash));
@@ -59,9 +65,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           Cài đặt & Tùy chỉnh Quy tắc
         </h2>
         <p className="text-xs text-slate-500 dark:text-zinc-400">
-          Cấu hình mục tiêu tiền mặt, cơ sở dữ liệu PostgreSQL và cài đặt ứng dụng
+          Cấu hình mục tiêu tiền mặt, tài khoản và hệ thống
         </p>
       </div>
+
+      <AccountProfileCard user={user} onLogout={onLogout} />
 
       <PwaInstallCard />
 

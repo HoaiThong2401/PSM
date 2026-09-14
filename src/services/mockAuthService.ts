@@ -7,10 +7,10 @@ export const mockAuthService = {
   getCurrentUser(): UserProfile | null {
     try {
       const data = localStorage.getItem(AUTH_USER_KEY);
-      if (!data) return INITIAL_USER;
+      if (!data) return null;
       return JSON.parse(data);
     } catch {
-      return INITIAL_USER;
+      return null;
     }
   },
 

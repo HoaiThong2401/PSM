@@ -117,17 +117,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/60 dark:border-slate-700/60">
           <div className="flex items-center gap-2.5 min-w-0">
             <img
-              src={user?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}
+              src={user?.avatarUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=User'}
               alt={user?.name || 'User'}
-              className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-500/30 shrink-0"
+              className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-500/30 shrink-0 bg-slate-200 dark:bg-slate-700"
             />
             <div className="min-w-0">
               <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
-                {user?.name || 'Nguyễn Văn Thông'}
+                {user?.name || 'Người dùng'}
               </p>
-              <p className="text-[10px] text-slate-400 dark:text-slate-400 truncate">
-                {user?.email || 'thong.finance@gmail.com'}
-              </p>
+              {user?.email && (
+                <p className="text-[10px] text-slate-400 dark:text-slate-400 truncate">
+                  {user.email}
+                </p>
+              )}
             </div>
           </div>
           <button

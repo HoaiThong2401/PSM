@@ -148,6 +148,8 @@ function AppContent() {
           onResetSettings={resetSettings}
           onResetSampleData={resetToSampleData}
           onClearAllData={clearAllData}
+          user={user}
+          onLogout={logout}
         />
       )}
 
