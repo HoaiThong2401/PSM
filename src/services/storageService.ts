@@ -36,7 +36,13 @@ export const storageService = {
     try {
       const data = localStorage.getItem(SETTINGS_STORAGE_KEY);
       if (!data) return DEFAULT_USER_SETTINGS;
-      return { ...DEFAULT_USER_SETTINGS, ...JSON.parse(data) };
+      const parsed = JSON.parse(data);
+      const cycleDay = Number(parsed.cycleStartDay);
+      return {
+        ...DEFAULT_USER_SETTINGS,
+        ...parsed,
+        cycleStartDay: cycleDay >= 2 && cycleDay <= 28 ? cycleDay : 26,
+      };
     } catch (e) {
       console.error('Failed to load settings', e);
       return DEFAULT_USER_SETTINGS;

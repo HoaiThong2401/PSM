@@ -34,12 +34,15 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
+    const day = parseInt(cycleStartDay, 10);
+    const safeDay = !isNaN(day) && day >= 2 && day <= 28 ? day : 26;
     onUpdateSettings({
       weekdayTargetCash: parseVNDInput(weekdayTarget) || 200000,
       weekendTargetCash: parseVNDInput(weekendTarget) || 250000,
-      cycleStartDay: parseInt(cycleStartDay, 10) || 26,
+      cycleStartDay: safeDay,
       defaultBaseSalary: parseVNDInput(baseSalary) || 200000,
     });
+    setCycleStartDay(String(safeDay));
     toast({
       type: 'success',
       title: 'Đã lưu cài đặt thành công',
@@ -125,7 +128,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             <Input
               label="Ngày bắt đầu chu kỳ tháng"
               type="number"
-              min="1"
+              min="2"
               max="28"
               value={cycleStartDay}
               onChange={(e) => setCycleStartDay(e.target.value)}

@@ -31,11 +31,12 @@ export const supabaseSettingsService = {
     if (!data) return DEFAULT_USER_SETTINGS;
 
     const row = data as DbUserSettings;
+    const dbCycleDay = Number(row.custom_cycle_start_day);
     return {
       ...DEFAULT_USER_SETTINGS,
       weekdayTargetCash: Number(row.daily_target) || DEFAULT_USER_SETTINGS.weekdayTargetCash,
       weekendTargetCash: Number(row.weekend_target) || DEFAULT_USER_SETTINGS.weekendTargetCash,
-      cycleStartDay: Number(row.custom_cycle_start_day) || DEFAULT_USER_SETTINGS.cycleStartDay,
+      cycleStartDay: dbCycleDay >= 2 && dbCycleDay <= 28 ? dbCycleDay : 26,
       currency: row.currency || DEFAULT_USER_SETTINGS.currency,
       theme: row.theme || DEFAULT_USER_SETTINGS.theme,
     };

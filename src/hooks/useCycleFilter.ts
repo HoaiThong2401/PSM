@@ -4,12 +4,13 @@ import type { UserSettings } from '../types/settings';
 import { calculateCycleSummary } from '../utils/calculation';
 import { generateDateRange, formatDisplayDate } from '../utils/dateUtils';
 
-export function getCycleRange(year: number, month: number, cutoffDay: number): { startDate: string; endDate: string } {
+export function getCycleRange(year: number, month: number, cutoffDay: number = 26): { startDate: string; endDate: string } {
+  const safeCutoff = typeof cutoffDay === 'number' && cutoffDay >= 2 && cutoffDay <= 28 ? cutoffDay : 26;
   const startMonth = month === 1 ? 12 : month - 1;
   const startYear = month === 1 ? year - 1 : year;
-  const startDate = `${startYear}-${String(startMonth).padStart(2, '0')}-${String(cutoffDay).padStart(2, '0')}`;
+  const startDate = `${startYear}-${String(startMonth).padStart(2, '0')}-${String(safeCutoff).padStart(2, '0')}`;
 
-  const endDay = cutoffDay - 1;
+  const endDay = safeCutoff - 1;
   const endDate = `${year}-${String(month).padStart(2, '0')}-${String(endDay).padStart(2, '0')}`;
 
   return { startDate, endDate };
@@ -62,7 +63,8 @@ export function useCycleFilter(records: IncomeRecord[], settings: UserSettings) 
 
       let cycleMonth = m;
       let cycleYear = y;
-      if (d >= settings.cycleStartDay) {
+      const safeCutoff = typeof settings.cycleStartDay === 'number' && settings.cycleStartDay >= 2 && settings.cycleStartDay <= 28 ? settings.cycleStartDay : 26;
+      if (d >= safeCutoff) {
         cycleMonth += 1;
         if (cycleMonth > 12) {
           cycleMonth = 1;
