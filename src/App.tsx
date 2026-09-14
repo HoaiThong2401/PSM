@@ -17,7 +17,7 @@ import { ConfirmDialog } from './components/ui/ConfirmDialog';
 import type { IncomeRecord, DayStatus } from './types/income';
 
 function AppContent() {
-  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, logout, isSupabaseLive } = useAuth();
   const { settings, updateSettings, resetSettings } = useSettings(user?.id);
   const { toast } = useToast();
 
@@ -148,6 +148,7 @@ function AppContent() {
           onResetSettings={resetSettings}
           onResetSampleData={resetToSampleData}
           onClearAllData={clearAllData}
+          isLiveSync={isSupabaseLive && user?.role !== 'Demo' && user?.id !== 'demo_user'}
         />
       )}
 

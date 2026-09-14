@@ -7,7 +7,6 @@ import { formatNumber, parseVNDInput } from '../utils/currency';
 import { exportToJSON } from '../utils/exportUtils';
 import { useToast } from '../components/ui/Toast';
 import { PwaInstallCard } from '../components/settings/PwaInstallCard';
-import { isSupabaseConfigured } from '../services/supabaseClient';
 import { Sliders, Moon, Sun, Download, RotateCcw, Database, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface SettingsPageProps {
@@ -16,6 +15,7 @@ interface SettingsPageProps {
   onResetSettings: () => void;
   onResetSampleData: () => void;
   onClearAllData?: () => void;
+  isLiveSync?: boolean;
 }
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({
@@ -24,13 +24,13 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   onResetSettings,
   onResetSampleData,
   onClearAllData,
+  isLiveSync = false,
 }) => {
   const { toast } = useToast();
   const [weekdayTarget, setWeekdayTarget] = useState(formatNumber(settings.weekdayTargetCash));
   const [weekendTarget, setWeekendTarget] = useState(formatNumber(settings.weekendTargetCash));
   const [cycleStartDay, setCycleStartDay] = useState(String(settings.cycleStartDay));
   const [baseSalary, setBaseSalary] = useState(formatNumber(settings.defaultBaseSalary));
-  const isSupabaseLive = isSupabaseConfigured();
 
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +77,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100">
                   Cơ sở dữ liệu PostgreSQL (Supabase)
                 </h3>
-                {isSupabaseLive ? (
+                {isLiveSync ? (
                   <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-semibold">
                     <CheckCircle className="w-3 h-3" /> Đang kết nối Live DB
                   </span>
@@ -88,9 +88,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 )}
               </div>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
-                {isSupabaseLive
+                {isLiveSync
                   ? 'Dữ liệu thu nhập và cài đặt được lưu trữ đồng bộ trực tiếp trên PostgreSQL Cloud.'
-                  : 'Để kết nối PostgreSQL: Mở file .env, điền VITE_SUPABASE_URL & VITE_SUPABASE_ANON_KEY từ Supabase.'}
+                  : 'Bạn đang ở tài khoản Demo hoặc chế độ Offline. Dữ liệu được lưu trong trình duyệt của bạn.'}
               </p>
             </div>
           </div>

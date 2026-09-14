@@ -3,11 +3,11 @@ import { DEFAULT_USER_SETTINGS } from '../types/settings';
 import { computeRecordTotals } from '../utils/calculation';
 
 export const INITIAL_USER = {
-  id: 'user_google_1029384756',
-  email: 'thong.finance@gmail.com',
-  name: 'Nguyễn Văn Thông',
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  role: 'Freelancer / Staff',
+  id: 'demo_user',
+  email: 'demo@local.storage',
+  name: 'Tài khoản Demo',
+  avatarUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=Demo',
+  role: 'Demo',
 };
 
 const rawCycle09Records: Array<{
