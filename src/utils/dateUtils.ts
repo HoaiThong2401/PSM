@@ -49,8 +49,11 @@ export function formatShortDate(dateString: string): string {
  */
 export function generateDateRange(startDate: string, endDate: string): string[] {
   const dates: string[] = [];
-  const current = new Date(startDate);
-  const end = new Date(endDate);
+  const [startY, startM, startD] = startDate.split('-').map(Number);
+  const [endY, endM, endD] = endDate.split('-').map(Number);
+
+  const current = new Date(startY, startM - 1, startD);
+  const end = new Date(endY, endM - 1, endD);
 
   while (current <= end) {
     const y = current.getFullYear();

@@ -100,8 +100,8 @@ export const IncomeCardTimeline: React.FC<IncomeCardTimelineProps> = ({
               }}
               className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-lg px-2 py-1 focus:outline-none"
             >
-              <option value={5}>5 thẻ</option>
-              <option value={10}>10 thẻ</option>
+              <option value={6}>6 thẻ</option>
+              <option value={12}>12 thẻ</option>
               <option value={records.length}>Tất cả</option>
             </select>
           </div>
@@ -144,11 +144,10 @@ export const IncomeCardTimeline: React.FC<IncomeCardTimelineProps> = ({
               <button
                 key={`page-${pageNum}`}
                 onClick={() => setCurrentPage(pageNum)}
-                className={`min-w-[28px] h-7 px-1.5 rounded-lg font-bold transition-all text-xs shrink-0 ${
-                  isActive
+                className={`min-w-[28px] h-7 px-1.5 rounded-lg font-bold transition-all text-xs shrink-0 ${isActive
                     ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/30'
                     : 'border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                }`}
+                  }`}
               >
                 {pageNum}
               </button>
