@@ -38,8 +38,16 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
     });
   };
 
+  const handleOpenInput = () => {
+    if (isGoalReached) handleCelebrate();
+    onQuickUpdateCash(todayRecord);
+  };
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white p-6 sm:p-8 shadow-xl shadow-indigo-950/20 border border-indigo-700/40">
+    <div
+      onClick={handleOpenInput}
+      className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white p-6 sm:p-8 shadow-xl shadow-indigo-950/20 border border-indigo-700/40 hover:border-indigo-500/60 transition-all duration-200 cursor-pointer group active:scale-[0.998]"
+    >
       <div className="absolute -right-16 -top-16 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -left-16 -bottom-16 w-64 h-64 bg-sky-500/15 rounded-full blur-3xl pointer-events-none" />
 
