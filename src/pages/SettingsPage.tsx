@@ -15,6 +15,7 @@ interface SettingsPageProps {
   onUpdateSettings: (newSettings: Partial<UserSettings>) => void;
   onResetSettings: () => void;
   onResetSampleData: () => void;
+  onClearAllData?: () => void;
 }
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({
@@ -22,6 +23,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   onUpdateSettings,
   onResetSettings,
   onResetSampleData,
+  onClearAllData,
 }) => {
   const { toast } = useToast();
   const [weekdayTarget, setWeekdayTarget] = useState(formatNumber(settings.weekdayTargetCash));
@@ -213,8 +215,20 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               toast({ type: 'info', title: 'Đã nạp lại dữ liệu mẫu kỳ 09/2026' });
             }}
           >
-            <RotateCcw className="w-4 h-4" /> Khôi phục dữ liệu mẫu
+            <RotateCcw className="w-4 h-4" /> Nạp dữ liệu mẫu
           </Button>
+          {onClearAllData && (
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => {
+                onClearAllData();
+                toast({ type: 'success', title: 'Đã xóa sạch dữ liệu, sẵn sàng nhập mới!' });
+              }}
+            >
+              Xóa sạch dữ liệu (Nhập mới)
+            </Button>
+          )}
         </div>
       </Card>
     </div>

@@ -108,4 +108,10 @@ export const supabaseIncomeService = {
     if (error) throw error;
     return (data as DbIncomeRecord[]).map((r) => fromDbRecord(r, settings));
   },
+
+  async clearAllRecords(userId: string): Promise<void> {
+    if (!supabase) throw new Error('Supabase client chưa được cấu hình');
+    const { error } = await supabase.from('income_records').delete().eq('user_id', userId);
+    if (error) throw error;
+  },
 };

@@ -32,6 +32,7 @@ function AppContent() {
     deleteRecord,
     undoLastDelete,
     resetToSampleData,
+    clearAllData,
   } = useIncomeData(user?.id, settings);
 
   const {
@@ -145,6 +146,7 @@ function AppContent() {
           onUpdateSettings={updateSettings}
           onResetSettings={resetSettings}
           onResetSampleData={resetToSampleData}
+          onClearAllData={clearAllData}
         />
       )}
 

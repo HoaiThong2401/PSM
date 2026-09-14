@@ -31,16 +31,7 @@ export function useIncomeData(userId: string | undefined, settings: UserSettings
       if (isSupabaseLive) {
         try {
           const dbRecords = await supabaseIncomeService.fetchRecords(userId, settings);
-          if (!isMounted) return;
-
-          if (dbRecords.length === 0) {
-            // Khởi tạo dữ liệu mẫu lần đầu vào database nếu chưa có bản ghi
-            const seeded = INITIAL_INCOME_RECORDS.map((r) => ({ ...r, userId }));
-            const saved = await supabaseIncomeService.bulkUpsert(seeded, settings);
-            if (isMounted) setRecords(saved);
-          } else {
-            setRecords(dbRecords);
-          }
+          if (isMounted) setRecords(dbRecords);
         } catch (err) {
           console.warn('Lỗi kết nối Supabase, chuyển sang cache local:', err);
           const local = storageService.getRecords(userId);
@@ -48,9 +39,7 @@ export function useIncomeData(userId: string | undefined, settings: UserSettings
         }
       } else {
         const stored = storageService.getRecords(userId);
-        const refreshed = stored.map((r) =>
-          computeRecordTotals(r, settings)
-        );
+        const refreshed = stored.map((r) => computeRecordTotals(r, settings));
         if (isMounted) setRecords(refreshed);
       }
 
@@ -241,6 +230,15 @@ export function useIncomeData(userId: string | undefined, settings: UserSettings
     }
   }, [userId, settings, isSupabaseLive, persistLocal]);
 
+  const clearAllData = useCallback(async () => {
+    if (!userId) return;
+    if (isSupabaseLive) {
+      await supabaseIncomeService.clearAllRecords(userId);
+    }
+    setRecords([]);
+    storageService.clearAll(userId);
+  }, [userId, isSupabaseLive]);
+
   return {
     records,
     isLoading,
@@ -249,5 +247,6 @@ export function useIncomeData(userId: string | undefined, settings: UserSettings
     deleteRecord,
     undoLastDelete,
     resetToSampleData,
+    clearAllData,
   };
 }
