@@ -40,12 +40,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 }) => {
   const todayISO = getTodayISO();
   const todayRecord = useMemo(() => {
-    return cycleRecords.find((r) => r.date === todayISO);
+    return (
+      cycleRecords.find((r) => r.date === todayISO) ||
+      cycleRecords.find((r) => r.status === 'processing') ||
+      cycleRecords.find((r) => r.cash > 0) ||
+      cycleRecords[0]
+    );
   }, [cycleRecords, todayISO]);
 
   const recentRecords = useMemo(() => {
     const relevant = cycleRecords.filter(
-      (r) => r.cash > 0 || r.baseSalary > 0 || r.date <= todayISO || r.status === 'processing'
+      (r) => r.cash > 0 || r.baseSalary > 0 || r.tips > 0 || r.bonus > 0 || r.status === 'processing' || r.status === 'success' || r.status === 'failed' || r.date <= todayISO
     );
     return [...relevant]
       .sort((a, b) => {
@@ -60,6 +65,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         return b.date.localeCompare(a.date);
       })
       .slice(0, 7);
+  }, [cycleRecords, todayISO]);
+
+  const chartRecords = useMemo(() => {
+    const active = cycleRecords.filter(
+      (r) => r.cash > 0 || r.baseSalary > 0 || r.tips > 0 || r.bonus > 0 || r.status !== 'not_started' || r.date <= todayISO
+    );
+    return active.length > 0 ? active : cycleRecords;
   }, [cycleRecords, todayISO]);
 
   return (
@@ -79,7 +91,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <IncomeTrendChart records={cycleRecords.filter((r) => r.date <= todayISO)} />
+          <IncomeTrendChart records={chartRecords} />
         </div>
         <div className="lg:col-span-1">
           <MonthlySummaryWidget summary={summary} currentCycle={currentCycle} />
@@ -87,7 +99,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <CashVsTargetChart records={cycleRecords.filter((r) => r.date <= todayISO)} />
+        <CashVsTargetChart records={chartRecords} />
         <StatusDonutChart summary={summary} />
       </div>
 
