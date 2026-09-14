@@ -43,7 +43,7 @@ export const vi: TranslationDictionary = {
     userFallback: 'Người dùng',
   },
   dashboard: {
-    todayHeroTitle: 'Tiến độ Mục tiêu Tiền mặt Hôm nay',
+    todayHeroTitle: 'Tiến độ mục tiêu tiền mặt hôm nay',
     goalReachedDesc: 'Xuất sắc! Bạn đã vượt mục tiêu tiền mặt ngày hôm nay với',
     goalMissingDesc: 'Còn thiếu',
     goalStartDesc: 'Hãy bắt đầu ghi nhận các khoản thu nhập đầu tiên trong ngày!',
