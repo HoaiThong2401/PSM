@@ -11,13 +11,16 @@ export const storageService = {
     try {
       const data = localStorage.getItem(`${INCOME_STORAGE_KEY}_${userId}`);
       if (!data) {
-        this.saveRecords(userId, INITIAL_INCOME_RECORDS);
-        return INITIAL_INCOME_RECORDS;
+        if (userId === 'user_01' || userId === 'demo') {
+          this.saveRecords(userId, INITIAL_INCOME_RECORDS);
+          return INITIAL_INCOME_RECORDS;
+        }
+        return [];
       }
       return JSON.parse(data);
     } catch (e) {
       console.error('Failed to load records from storage', e);
-      return INITIAL_INCOME_RECORDS;
+      return [];
     }
   },
 
