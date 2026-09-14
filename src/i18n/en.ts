@@ -40,6 +40,11 @@ export const en: TranslationDictionary = {
     notifications: 'Notifications',
     languageToggle: 'Change Language',
     cyclePrefix: 'Cycle',
+    currentCycle: 'Current',
+    prevCycle: 'Previous cycle',
+    nextCycle: 'Next cycle',
+    selectCycleTitle: 'Select Working Cycle',
+    selectCycleDesc: 'Switch cycle to manage and view records',
     userFallback: 'User',
   },
   dashboard: {

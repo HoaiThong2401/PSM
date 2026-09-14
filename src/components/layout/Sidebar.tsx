@@ -69,7 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </span>
             </div>
             <p className="text-[11px] text-slate-400 dark:text-slate-400 font-medium">
-              Quản lý tài chính cá nhân
+              {t.common.appSubtitle}
             </p>
           </div>
         </div>

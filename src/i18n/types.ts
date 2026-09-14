@@ -40,6 +40,11 @@ export interface TranslationDictionary {
     notifications: string;
     languageToggle: string;
     cyclePrefix: string;
+    currentCycle: string;
+    prevCycle: string;
+    nextCycle: string;
+    selectCycleTitle: string;
+    selectCycleDesc: string;
     userFallback: string;
   };
   dashboard: {

@@ -36,12 +36,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   onToggleTheme,
   children,
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const pageTitles: Record<NavTab, { title: string; subtitle: string }> = {
     dashboard: {
-      title: 'DailyIncome Dashboard',
-      subtitle: t.common.appSubtitle,
+      title: t.nav.dashboard,
+      subtitle: language === 'vi' ? 'Tổng quan tiến độ thu nhập & mục tiêu hàng ngày' : 'Daily income overview & target tracking',
     },
     income: {
       title: t.income.pageTitle,

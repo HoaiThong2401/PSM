@@ -40,6 +40,11 @@ export const vi: TranslationDictionary = {
     notifications: 'Thông báo',
     languageToggle: 'Đổi ngôn ngữ',
     cyclePrefix: 'Kỳ',
+    currentCycle: 'Hiện tại',
+    prevCycle: 'Kỳ trước',
+    nextCycle: 'Kỳ sau',
+    selectCycleTitle: 'Chọn Kỳ Làm Việc',
+    selectCycleDesc: 'Chọn chu kỳ để xem và quản lý thu nhập',
     userFallback: 'Người dùng',
   },
   dashboard: {
