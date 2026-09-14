@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../components/ui/Toast';
 
 import { useLanguage } from '../contexts/LanguageContext';
+import { FlagIcon } from '../components/ui/FlagIcon';
 
 export const LoginPage: React.FC = () => {
   const { loginWithGoogle, loginWithPassword, signUpWithPassword, loginWithDemo, isLoading } = useAuth();
@@ -69,7 +70,8 @@ export const LoginPage: React.FC = () => {
           onClick={toggleLanguage}
           className="px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 border border-slate-200/80 dark:border-slate-700/80 shadow-xs"
         >
-          <span>{isVi ? '🇻🇳 VN' : '🇬🇧 EN'}</span>
+          <FlagIcon country={isVi ? 'vn' : 'en'} className="w-4 h-3" />
+          <span>{isVi ? 'VN' : 'EN'}</span>
         </button>
       </div>
 

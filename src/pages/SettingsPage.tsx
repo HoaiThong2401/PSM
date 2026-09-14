@@ -10,6 +10,7 @@ import { PwaInstallCard } from '../components/settings/PwaInstallCard';
 import { Sliders, Moon, Sun, Download, RotateCcw } from 'lucide-react';
 
 import { useLanguage } from '../contexts/LanguageContext';
+import { FlagIcon } from '../components/ui/FlagIcon';
 import { Globe } from 'lucide-react';
 
 interface SettingsPageProps {
@@ -154,15 +155,19 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               variant={language === 'vi' ? 'primary' : 'outline'}
               size="sm"
               onClick={() => setLanguage('vi')}
+              className="flex items-center gap-1.5"
             >
-              🇻🇳 VN
+              <FlagIcon country="vn" className="w-4 h-3" />
+              <span>VN</span>
             </Button>
             <Button
               variant={language === 'en' ? 'primary' : 'outline'}
               size="sm"
               onClick={() => setLanguage('en')}
+              className="flex items-center gap-1.5"
             >
-              🇬🇧 EN
+              <FlagIcon country="en" className="w-4 h-3" />
+              <span>EN</span>
             </Button>
           </div>
         </div>
