@@ -2,6 +2,8 @@ import React from 'react';
 import { LayoutDashboard, WalletCards, BarChart3, Settings } from 'lucide-react';
 import type { NavTab } from './Sidebar';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface MobileNavigationProps {
   currentTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
@@ -11,11 +13,13 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
   currentTab,
   onSelectTab,
 }) => {
+  const { t } = useLanguage();
+
   const navItems: Array<{ id: NavTab; label: string; icon: React.ReactNode }> = [
-    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { id: 'income', label: 'Thu nhập', icon: <WalletCards className="w-5 h-5" /> },
-    { id: 'analytics', label: 'Thống kê', icon: <BarChart3 className="w-5 h-5" /> },
-    { id: 'settings', label: 'Cài đặt', icon: <Settings className="w-5 h-5" /> },
+    { id: 'dashboard', label: t.nav.dashboard, icon: <LayoutDashboard className="w-5 h-5" /> },
+    { id: 'income', label: t.nav.income, icon: <WalletCards className="w-5 h-5" /> },
+    { id: 'analytics', label: t.nav.analytics, icon: <BarChart3 className="w-5 h-5" /> },
+    { id: 'settings', label: t.nav.settings, icon: <Settings className="w-5 h-5" /> },
   ];
 
   return (

@@ -12,6 +12,8 @@ import {
 
 import { getPaginationPages } from '../../utils/pagination';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface IncomeCardTimelineProps {
   records: IncomeRecord[];
   onEdit: (record: IncomeRecord) => void;
@@ -31,6 +33,7 @@ export const IncomeCardTimeline: React.FC<IncomeCardTimelineProps> = ({
   onInlineUpdate,
   initialPageSize = 6,
 }) => {
+  const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(initialPageSize);
 
@@ -60,10 +63,10 @@ export const IncomeCardTimeline: React.FC<IncomeCardTimelineProps> = ({
         </div>
         <div>
           <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
-            Không tìm thấy bản ghi thu nhập nào
+            {t.income.emptyTitle}
           </h4>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Hãy thử thay đổi điều kiện lọc hoặc thêm mới thu nhập cho ngày này.
+            {t.income.emptyDesc}
           </p>
         </div>
       </Card>
@@ -87,11 +90,11 @@ export const IncomeCardTimeline: React.FC<IncomeCardTimelineProps> = ({
       <div className="px-3 sm:px-4 py-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/90 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-2.5 text-xs select-none">
         <div className="w-full md:w-auto flex items-center justify-between gap-2 text-slate-500 dark:text-slate-400">
           <span className="text-[11px] sm:text-xs">
-            Hiển thị <span className="font-bold text-slate-800 dark:text-slate-200">{startRecordIndex}-{endRecordIndex}</span> / <span className="font-bold text-slate-800 dark:text-slate-200">{records.length}</span>
+            {t.income.showingText} <span className="font-bold text-slate-800 dark:text-slate-200">{startRecordIndex}-{endRecordIndex}</span> / <span className="font-bold text-slate-800 dark:text-slate-200">{records.length}</span>
           </span>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-[11px]">Trang:</span>
+            <span className="text-slate-400 text-[11px]">{t.income.pageLabel}</span>
             <select
               value={pageSize}
               onChange={(e) => {
@@ -100,9 +103,9 @@ export const IncomeCardTimeline: React.FC<IncomeCardTimelineProps> = ({
               }}
               className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-lg px-2 py-1 focus:outline-none"
             >
-              <option value={6}>6 thẻ</option>
-              <option value={12}>12 thẻ</option>
-              <option value={records.length}>Tất cả</option>
+              <option value={6}>6 {t.income.cardsPerPage}</option>
+              <option value={12}>12 {t.income.cardsPerPage}</option>
+              <option value={records.length}>{t.common.all}</option>
             </select>
           </div>
         </div>

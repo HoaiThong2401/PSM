@@ -10,6 +10,8 @@ import { getDayOfWeekLabel, getTodayISO } from '../../utils/dateUtils';
 import { computeDayStatus, getTargetForDate } from '../../utils/calculation';
 import { Coins, Briefcase, HeartHandshake, Gift, FileText, Calendar } from 'lucide-react';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface IncomeFormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -34,6 +36,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
   settings,
   onSave,
 }) => {
+  const { t, language } = useLanguage();
   const [date, setDate] = useState<string>(getTodayISO());
   const [cashStr, setCashStr] = useState<string>('');
   const [baseSalaryStr, setBaseSalaryStr] = useState<string>('');
@@ -77,7 +80,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
   const target = getTargetForDate(date, settings);
   const autoStatus = computeDayStatus(date, totalCash, target);
   const effectiveStatus = selectedStatus === 'auto' ? autoStatus : selectedStatus;
-  const dayLabel = getDayOfWeekLabel(date);
+  const dayLabel = getDayOfWeekLabel(date, language);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +98,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
   };
 
   const statusOptions: Array<{ id: DayStatus | 'auto'; label: string }> = [
-    { id: 'auto', label: 'Tự động tính' },
+    { id: 'auto', label: language === 'vi' ? 'Tự động tính' : 'Auto Calculate' },
     { id: 'success', label: 'Success' },
     { id: 'processing', label: 'Processing' },
     { id: 'failed', label: 'Failed' },
@@ -106,8 +109,8 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={record ? 'Chỉnh sửa thu nhập' : 'Thêm thu nhập mới'}
-      description={`Cập nhật số liệu thu nhập cá nhân cho ${dayLabel}`}
+      title={record ? t.modal.editTitle : t.modal.addTitle}
+      description={record ? t.modal.editSubtitle : t.modal.addSubtitle}
       maxWidth="md"
       footer={
         <div className="flex items-center justify-end gap-2.5">
@@ -118,7 +121,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
             onClick={onClose}
             className="flex-1 sm:flex-none justify-center"
           >
-            Hủy
+            {t.common.cancel}
           </Button>
           <Button
             type="submit"
@@ -127,14 +130,14 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
             size="md"
             className="flex-1 sm:flex-none justify-center shadow-md shadow-indigo-500/20"
           >
-            Lưu thu nhập
+            {record ? t.modal.saveChanges : t.modal.createNew}
           </Button>
         </div>
       }
     >
       <form id="income-record-form" onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="Ngày làm việc"
+          label={t.modal.dateLabel}
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
@@ -144,7 +147,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <Input
-            label="Tiền mặt (VNĐ)"
+            label={t.modal.cashLabel}
             placeholder="0"
             value={cashStr}
             onChange={(e) => handleCurrencyInput(e.target.value, setCashStr)}
@@ -153,7 +156,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
           />
 
           <Input
-            label="Lương cơ bản (VNĐ)"
+            label={t.modal.baseSalaryLabel}
             placeholder="0"
             value={baseSalaryStr}
             onChange={(e) => handleCurrencyInput(e.target.value, setBaseSalaryStr)}
@@ -161,7 +164,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
           />
 
           <Input
-            label="Tiền bo (Tips)"
+            label={t.modal.tipsLabel}
             placeholder="0"
             value={tipsStr}
             onChange={(e) => handleCurrencyInput(e.target.value, setTipsStr)}
@@ -169,7 +172,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
           />
 
           <Input
-            label="Thưởng thêm"
+            label={t.modal.bonusLabel}
             placeholder="0"
             value={bonusStr}
             onChange={(e) => handleCurrencyInput(e.target.value, setBonusStr)}
@@ -179,7 +182,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
 
         <div className="space-y-1.5">
           <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-            Trạng thái ngày (Tùy chỉnh hoặc tự động)
+            {t.modal.statusLabel}
           </label>
           <div className="flex flex-wrap items-center gap-1.5">
             {statusOptions.map((opt) => (
@@ -200,8 +203,8 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
         </div>
 
         <Input
-          label="Ghi chú (Tùy chọn)"
-          placeholder="VD: Ca sáng đông khách, thưởng lễ..."
+          label={t.modal.noteLabel}
+          placeholder={t.modal.notePlaceholder}
           value={note}
           onChange={(e) => setNote(e.target.value)}
           leftIcon={<FileText className="w-4 h-4" />}
@@ -209,24 +212,24 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
 
         <div className="p-3.5 rounded-2xl bg-indigo-50/60 dark:bg-slate-800/80 border border-indigo-100 dark:border-slate-700/80 space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-600 dark:text-slate-400">Mục tiêu tiền mặt ({dayLabel}):</span>
+            <span className="text-slate-600 dark:text-slate-400">{t.common.target} ({dayLabel}):</span>
             <span className="font-bold text-slate-800 dark:text-slate-200 tabular-nums">{formatVND(target)}</span>
           </div>
 
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-600 dark:text-slate-400">Tổng tiền mặt:</span>
+            <span className="text-slate-600 dark:text-slate-400">{t.income.colTotalCash}:</span>
             <span className="font-bold text-sky-600 dark:text-sky-400 tabular-nums">{formatVND(totalCash)}</span>
           </div>
 
           <div className="flex items-center justify-between text-xs border-t border-indigo-100 dark:border-slate-700 pt-1.5">
-            <span className="font-bold text-slate-900 dark:text-slate-100">Tổng thu nhập dự kiến:</span>
+            <span className="font-bold text-slate-900 dark:text-slate-100">{t.income.colTotalIncome}:</span>
             <span className="font-black text-indigo-600 dark:text-indigo-400 text-sm tabular-nums">
               {formatVND(totalIncome)}
             </span>
           </div>
 
           <div className="flex items-center justify-between text-xs pt-1">
-            <span className="text-slate-600 dark:text-slate-400">Trạng thái áp dụng:</span>
+            <span className="text-slate-600 dark:text-slate-400">{t.income.colStatus}:</span>
             <Badge status={effectiveStatus} size="sm" />
           </div>
         </div>

@@ -6,6 +6,8 @@ import { formatDisplayDate, getDayOfWeekLabel } from '../../utils/dateUtils';
 import { getNextStatus } from '../../utils/calculation';
 import { Edit2, Trash2, Check, X } from 'lucide-react';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface IncomeTableRowProps {
   record: IncomeRecord;
   onEdit: (record: IncomeRecord) => void;
@@ -23,11 +25,12 @@ export const IncomeTableRow: React.FC<IncomeTableRowProps> = ({
   onDelete,
   onInlineUpdate,
 }) => {
+  const { language } = useLanguage();
   const [editingField, setEditingField] = useState<string | null>(null);
   const [tempValue, setTempValue] = useState<string>('');
 
-  const dayOfWeek = getDayOfWeekLabel(record.date);
-  const isWeekend = dayOfWeek === 'Thứ 6' || dayOfWeek === 'Thứ 7' || dayOfWeek === 'Chủ nhật';
+  const dayOfWeek = getDayOfWeekLabel(record.date, language);
+  const isWeekend = dayOfWeek === 'Thứ 6' || dayOfWeek === 'Thứ 7' || dayOfWeek === 'Chủ nhật' || dayOfWeek === 'Fri' || dayOfWeek === 'Sat' || dayOfWeek === 'Sun';
 
   const startInlineEdit = (field: 'cash' | 'baseSalary' | 'tips' | 'bonus', currentVal: number) => {
     setEditingField(field);

@@ -7,6 +7,8 @@ import type { IncomeCycle } from '../../types/income';
 import type { UserProfile } from '../../types/auth';
 import type { UserSettings } from '../../types/settings';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface MainLayoutProps {
   currentTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
@@ -34,22 +36,24 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   onToggleTheme,
   children,
 }) => {
+  const { t } = useLanguage();
+
   const pageTitles: Record<NavTab, { title: string; subtitle: string }> = {
     dashboard: {
-      title: 'Personal Income Dashboard',
-      subtitle: 'Tổng quan tiến độ thu nhập và mục tiêu tài chính',
+      title: 'DailyIncome Dashboard',
+      subtitle: t.common.appSubtitle,
     },
     income: {
-      title: 'Quản lý Thu nhập',
-      subtitle: 'Xem và chỉnh sửa chi tiết các khoản thu theo từng ngày',
+      title: t.income.pageTitle,
+      subtitle: t.income.pageSubtitle,
     },
     analytics: {
-      title: 'Lịch sử & Thống kê',
-      subtitle: 'Báo cáo chuyên sâu và phân tích hiệu suất kiếm tiền',
+      title: t.analytics.pageTitle,
+      subtitle: t.analytics.pageSubtitle,
     },
     settings: {
-      title: 'Cài đặt Tài chính',
-      subtitle: 'Tùy chỉnh mục tiêu tiền mặt, chu kỳ và hệ thống',
+      title: t.settings.pageTitle,
+      subtitle: t.settings.pageSubtitle,
     },
   };
 

@@ -5,12 +5,15 @@ import { formatVND } from '../utils/currency';
 import { formatDisplayDate, getDayOfWeekLabel, isWeekendOrFriday } from '../utils/dateUtils';
 import { Trophy, Calendar, PieChart } from 'lucide-react';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface AnalyticsPageProps {
   cycleRecords: IncomeRecord[];
   summary: CycleSummary;
 }
 
 export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summary }) => {
+  const { t, language } = useLanguage();
   const topEarningDays = useMemo(() => {
     return [...cycleRecords]
       .filter((r) => r.totalIncome > 0)
@@ -54,10 +57,10 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
     <div className="space-y-6 animate-fade-in pb-12">
       <div>
         <h2 className="text-xl font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
-          Phân tích & Lịch sử Thu nhập
+          {t.analytics.pageTitle}
         </h2>
         <p className="text-xs text-slate-500 dark:text-zinc-400">
-          Đánh giá hiệu suất kiếm tiền theo từng nguồn thu và ngày trong tuần
+          {t.analytics.pageSubtitle}
         </p>
       </div>
 
@@ -66,7 +69,7 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-amber-500" />
             <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100">
-              Top 3 Ngày Thu Nhập Cao Nhất
+              {language === 'vi' ? 'Top 3 Ngày Thu Nhập Cao Nhất' : 'Top 3 Highest Income Days'}
             </h3>
           </div>
           <div className="space-y-2.5">
@@ -89,10 +92,10 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
                   </div>
                   <div>
                     <p className="text-xs font-bold text-slate-900 dark:text-zinc-100">
-                      {getDayOfWeekLabel(record.date)}, {formatDisplayDate(record.date)}
+                      {getDayOfWeekLabel(record.date, language)}, {formatDisplayDate(record.date)}
                     </p>
                     <p className="text-[10px] text-slate-400 dark:text-zinc-500">
-                      Tiền mặt: {formatVND(record.cash)} | Bo: {formatVND(record.tips)}
+                      {t.income.colCash}: {formatVND(record.cash)} | {t.income.colTips}: {formatVND(record.tips)}
                     </p>
                   </div>
                 </div>
@@ -108,16 +111,18 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
           <div className="flex items-center gap-2">
             <Calendar className="w-5 h-5 text-indigo-500" />
             <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100">
-              So Sánh Ngày Thường vs Cuối Tuần
+              {language === 'vi' ? 'So Sánh Ngày Thường vs Cuối Tuần' : 'Weekdays vs Weekends Comparison'}
             </h3>
           </div>
           <div className="space-y-3">
             <div className="p-3.5 rounded-xl bg-indigo-50/50 dark:bg-zinc-800/60 border border-indigo-100 dark:border-zinc-800 flex justify-between items-center">
               <div>
                 <span className="text-xs font-semibold text-slate-700 dark:text-zinc-300 block">
-                  Trung bình Thứ 2 - Thứ 5 ({weekdayCount} ngày)
+                  {language === 'vi' ? `Trung bình Thứ 2 - Thứ 5 (${weekdayCount} ngày)` : `Avg Mon - Thu (${weekdayCount} days)`}
                 </span>
-                <span className="text-xs text-slate-400">Mục tiêu: 200.000 ₫/ngày</span>
+                <span className="text-xs text-slate-400">
+                  {language === 'vi' ? 'Mục tiêu: 200.000 ₫/ngày' : 'Target: 200,000 ₫/day'}
+                </span>
               </div>
               <span className="text-base font-bold text-indigo-600 dark:text-indigo-400 tabular-nums">
                 {formatVND(weekdayAvg)}
@@ -127,9 +132,11 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
             <div className="p-3.5 rounded-xl bg-amber-50/50 dark:bg-zinc-800/60 border border-amber-100 dark:border-zinc-800 flex justify-between items-center">
               <div>
                 <span className="text-xs font-semibold text-slate-700 dark:text-zinc-300 block">
-                  Trung bình Thứ 6 - CN ({weekendCount} ngày)
+                  {language === 'vi' ? `Trung bình Thứ 6 - CN (${weekendCount} ngày)` : `Avg Fri - Sun (${weekendCount} days)`}
                 </span>
-                <span className="text-xs text-slate-400">Mục tiêu: 250.000 ₫/ngày</span>
+                <span className="text-xs text-slate-400">
+                  {language === 'vi' ? 'Mục tiêu: 250.000 ₫/ngày' : 'Target: 250,000 ₫/day'}
+                </span>
               </div>
               <span className="text-base font-bold text-amber-600 dark:text-amber-400 tabular-nums">
                 {formatVND(weekendAvg)}
@@ -143,14 +150,14 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
         <div className="flex items-center gap-2">
           <PieChart className="w-5 h-5 text-sky-500" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100">
-            Tỷ Trọng Nguồn Thu Nhập Trong Toàn Kỳ
+            {t.analytics.incomeStructure}
           </h3>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="p-4 rounded-xl bg-indigo-50 dark:bg-zinc-800/60 border border-indigo-100 dark:border-zinc-700">
             <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold block">
-              Tiền mặt ({cashPct}%)
+              {t.income.colCash} ({cashPct}%)
             </span>
             <span className="text-base font-black text-slate-900 dark:text-zinc-100 tabular-nums">
               {formatVND(summary.totalCash)}
@@ -159,7 +166,7 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
 
           <div className="p-4 rounded-xl bg-blue-50 dark:bg-zinc-800/60 border border-blue-100 dark:border-zinc-700">
             <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold block">
-              Lương CB ({baseSalaryPct}%)
+              {t.income.colBaseSalary} ({baseSalaryPct}%)
             </span>
             <span className="text-base font-black text-slate-900 dark:text-zinc-100 tabular-nums">
               {formatVND(summary.totalBaseSalary)}
@@ -168,7 +175,7 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
 
           <div className="p-4 rounded-xl bg-amber-50 dark:bg-zinc-800/60 border border-amber-100 dark:border-zinc-700">
             <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold block">
-              Tiền Bo ({tipsPct}%)
+              {t.income.colTips} ({tipsPct}%)
             </span>
             <span className="text-base font-black text-amber-600 dark:text-amber-400 tabular-nums">
               {formatVND(summary.totalTips)}
@@ -177,7 +184,7 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ cycleRecords, summ
 
           <div className="p-4 rounded-xl bg-emerald-50 dark:bg-zinc-800/60 border border-emerald-100 dark:border-zinc-700">
             <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold block">
-              Thưởng ({bonusPct}%)
+              {t.income.colBonus} ({bonusPct}%)
             </span>
             <span className="text-base font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
               {formatVND(summary.totalBonus)}

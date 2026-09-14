@@ -7,7 +7,10 @@ import { formatNumber, parseVNDInput } from '../utils/currency';
 import { exportToJSON } from '../utils/exportUtils';
 import { useToast } from '../components/ui/Toast';
 import { PwaInstallCard } from '../components/settings/PwaInstallCard';
-import { Sliders, Moon, Sun, Download, RotateCcw, Database, CheckCircle, AlertCircle } from 'lucide-react';
+import { Sliders, Moon, Sun, Download, RotateCcw } from 'lucide-react';
+
+import { useLanguage } from '../contexts/LanguageContext';
+import { Globe } from 'lucide-react';
 
 interface SettingsPageProps {
   settings: UserSettings;
@@ -26,6 +29,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   onClearAllData,
   isLiveSync = false,
 }) => {
+  const { t, language, setLanguage } = useLanguage();
   const { toast } = useToast();
   const [weekdayTarget, setWeekdayTarget] = useState(formatNumber(settings.weekdayTargetCash));
   const [weekendTarget, setWeekendTarget] = useState(formatNumber(settings.weekendTargetCash));
@@ -45,101 +49,68 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
     setCycleStartDay(String(safeDay));
     toast({
       type: 'success',
-      title: 'Đã lưu cài đặt thành công',
-      description: 'Mục tiêu tiền mặt và quy tắc chu kỳ đã được cập nhật.',
+      title: language === 'vi' ? 'Đã lưu cài đặt thành công' : 'Settings saved successfully',
     });
   };
 
   const handleExportBackup = () => {
     exportToJSON({ settings, exportedAt: new Date().toISOString() }, 'cai-dat-tai-chinh.json');
-    toast({ type: 'success', title: 'Đã tải xuống bản sao lưu' });
+    toast({ type: 'success', title: language === 'vi' ? 'Đã tải xuống bản sao lưu' : 'Backup downloaded' });
   };
 
   return (
     <div className="space-y-6 max-w-4xl animate-fade-in pb-12">
       <div>
         <h2 className="text-xl font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
-          Cài đặt & Tùy chỉnh Quy tắc
+          {t.settings.pageTitle}
         </h2>
         <p className="text-xs text-slate-500 dark:text-zinc-400">
-          Cấu hình mục tiêu tiền mặt, cơ sở dữ liệu PostgreSQL và cài đặt ứng dụng
+          {t.settings.pageSubtitle}
         </p>
       </div>
 
       <PwaInstallCard />
-
-      {/* Database Connection Card */}
-      <Card className="p-5 border-l-4 border-l-indigo-600">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5">
-              <Database className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100">
-                  Cơ sở dữ liệu PostgreSQL (Supabase)
-                </h3>
-                {isLiveSync ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-semibold">
-                    <CheckCircle className="w-3 h-3" /> Đang kết nối Live DB
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-semibold">
-                    <AlertCircle className="w-3 h-3" /> Chế độ Demo (LocalStorage)
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
-                {isLiveSync
-                  ? 'Dữ liệu thu nhập và cài đặt được lưu trữ đồng bộ trực tiếp trên PostgreSQL Cloud.'
-                  : 'Bạn đang ở tài khoản Demo hoặc chế độ Offline. Dữ liệu được lưu trong trình duyệt của bạn.'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </Card>
 
       {/* Rules Config Card */}
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-zinc-800">
           <Sliders className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
           <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100">
-            Quy tắc Mục tiêu Tiền mặt
+            {t.settings.rulesTitle}
           </h3>
         </div>
 
         <form onSubmit={handleSaveSettings} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="Mục tiêu Thứ 2 - Thứ 5 (VNĐ)"
+              label={t.settings.weekdayTarget}
               value={weekdayTarget}
               onChange={(e) => setWeekdayTarget(formatNumber(parseVNDInput(e.target.value)))}
-              helperText="Áp dụng cho ngày trong tuần (Mặc định 200.000 ₫)"
+              helperText={t.settings.weekdayHelper}
             />
 
             <Input
-              label="Mục tiêu Thứ 6 - Chủ Nhật (VNĐ)"
+              label={t.settings.weekendTarget}
               value={weekendTarget}
               onChange={(e) => setWeekendTarget(formatNumber(parseVNDInput(e.target.value)))}
-              helperText="Áp dụng cho cuối tuần (Mặc định 250.000 ₫)"
+              helperText={t.settings.weekendHelper}
             />
 
             <Input
-              label="Ngày bắt đầu chu kỳ tháng"
+              label={t.settings.cycleStartDay}
               type="number"
               min="2"
               max="28"
               value={cycleStartDay}
               onChange={(e) => setCycleStartDay(e.target.value)}
-              helperText="Mặc định ngày 26 (Kỳ: 26 tháng trước đến 25 tháng này)"
+              helperText={t.settings.cycleHelper}
             />
 
             <Input
-              label="Lương cơ bản mặc định mỗi ngày (VNĐ)"
+              label={t.settings.defaultBaseSalary}
               value={baseSalary}
               onChange={(e) => setBaseSalary(formatNumber(parseVNDInput(e.target.value)))}
-              helperText="Tự điền sẵn khi thêm ngày làm việc mới"
+              helperText={t.settings.defaultBaseSalaryHelper}
             />
           </div>
 
@@ -154,31 +125,52 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 setWeekendTarget('250.000');
                 setCycleStartDay('26');
                 setBaseSalary('200.000');
-                toast({ type: 'info', title: 'Đã đặt lại về mặc định' });
+                toast({ type: 'info', title: t.settings.resetDefaults });
               }}
             >
-              Đặt lại mặc định
+              {t.settings.resetDefaults}
             </Button>
             <Button type="submit" variant="primary" size="md">
-              Lưu thay đổi cài đặt
+              {t.settings.saveChanges}
             </Button>
           </div>
         </form>
       </Card>
 
-      {/* Theme Card */}
-      <Card className="p-6 space-y-4">
+      {/* Theme & Language Card */}
+      <Card className="p-6 space-y-5">
         <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800">
-          <Moon className="w-5 h-5 text-sky-500" />
-          <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100">Giao diện hiển thị</h3>
+          <Globe className="w-5 h-5 text-indigo-500" />
+          <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100">{t.settings.appearanceTitle}</h3>
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-slate-800 dark:text-zinc-200">Chế độ màu</p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
-              Chọn giao diện sáng (Light) hoặc tối (Dark Modern)
-            </p>
+            <p className="text-sm font-semibold text-slate-800 dark:text-zinc-200">{t.settings.languageTitle}</p>
+            <p className="text-xs text-slate-500 dark:text-zinc-400">{t.settings.languageSubtitle}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={language === 'vi' ? 'primary' : 'outline'}
+              size="sm"
+              onClick={() => setLanguage('vi')}
+            >
+              🇻🇳 Tiếng Việt
+            </Button>
+            <Button
+              variant={language === 'en' ? 'primary' : 'outline'}
+              size="sm"
+              onClick={() => setLanguage('en')}
+            >
+              🇬🇧 English
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-zinc-800/80">
+          <div>
+            <p className="text-sm font-semibold text-slate-800 dark:text-zinc-200">{t.settings.themeMode}</p>
+            <p className="text-xs text-slate-500 dark:text-zinc-400">{t.settings.themeSubtitle}</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -186,14 +178,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               size="sm"
               onClick={() => onUpdateSettings({ theme: 'light' })}
             >
-              <Sun className="w-4 h-4" /> Sáng
+              <Sun className="w-4 h-4" /> {t.settings.light}
             </Button>
             <Button
               variant={settings.theme === 'dark' ? 'primary' : 'outline'}
               size="sm"
               onClick={() => onUpdateSettings({ theme: 'dark' })}
             >
-              <Moon className="w-4 h-4" /> Tối
+              <Moon className="w-4 h-4" /> {t.settings.dark}
             </Button>
           </div>
         </div>
@@ -201,24 +193,29 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
       {/* Backup Card */}
       <Card className="p-6 space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800">
-          <Download className="w-5 h-5 text-slate-500" />
-          <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100">Dữ liệu & Sao lưu</h3>
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800">
+          <div className="flex items-center gap-2">
+            <Download className="w-5 h-5 text-slate-500" />
+            <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100">{t.settings.dataTitle}</h3>
+          </div>
+          <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${isLiveSync ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-200 dark:border-amber-800'}`}>
+            {isLiveSync ? '☁️ Cloud Sync Active' : '💾 Local Storage'}
+          </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="outline" size="sm" onClick={handleExportBackup}>
-            <Download className="w-4 h-4" /> Xuất bản sao lưu (JSON)
+            <Download className="w-4 h-4" /> {t.settings.exportBackup}
           </Button>
           <Button
             variant="secondary"
             size="sm"
             onClick={() => {
               onResetSampleData();
-              toast({ type: 'info', title: 'Đã nạp lại dữ liệu mẫu kỳ 09/2026' });
+              toast({ type: 'info', title: t.settings.loadSampleData });
             }}
           >
-            <RotateCcw className="w-4 h-4" /> Nạp dữ liệu mẫu
+            <RotateCcw className="w-4 h-4" /> {t.settings.loadSampleData}
           </Button>
           {onClearAllData && (
             <Button
@@ -226,10 +223,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               size="sm"
               onClick={() => {
                 onClearAllData();
-                toast({ type: 'success', title: 'Đã xóa sạch dữ liệu, sẵn sàng nhập mới!' });
+                toast({ type: 'success', title: t.settings.clearAllData });
               }}
             >
-              Xóa sạch dữ liệu (Nhập mới)
+              {t.settings.clearAllData}
             </Button>
           )}
         </div>

@@ -7,6 +7,8 @@ import { formatDisplayDate, getDayOfWeekLabel } from '../../utils/dateUtils';
 import { getNextStatus } from '../../utils/calculation';
 import { Edit2, Trash2 } from 'lucide-react';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface IncomeDayCardProps {
   record: IncomeRecord;
   onEdit: (record: IncomeRecord) => void;
@@ -24,8 +26,9 @@ export const IncomeDayCard: React.FC<IncomeDayCardProps> = ({
   onDelete,
   onInlineUpdate,
 }) => {
-  const dayOfWeek = getDayOfWeekLabel(record.date);
-  const isWeekend = dayOfWeek === 'Thứ 6' || dayOfWeek === 'Thứ 7' || dayOfWeek === 'Chủ nhật';
+  const { t, language } = useLanguage();
+  const dayOfWeek = getDayOfWeekLabel(record.date, language);
+  const isWeekend = dayOfWeek === 'Thứ 6' || dayOfWeek === 'Thứ 7' || dayOfWeek === 'Chủ nhật' || dayOfWeek === 'Fri' || dayOfWeek === 'Sat' || dayOfWeek === 'Sun';
   const targetPercent =
     record.targetCash > 0 ? Math.min(100, Math.round((record.cash / record.targetCash) * 100)) : 0;
 
@@ -75,14 +78,14 @@ export const IncomeDayCard: React.FC<IncomeDayCardProps> = ({
         <div className="p-3 rounded-xl bg-gradient-to-r from-indigo-50/70 via-sky-50/40 to-transparent dark:from-indigo-950/60 dark:via-slate-800/40 dark:to-transparent border border-indigo-100/50 dark:border-indigo-800/40 flex items-center justify-between">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 block">
-              Tổng thu nhập ngày
+              {t.dashboard.totalTodayIncome}
             </span>
             <span className="text-lg font-black text-indigo-600 dark:text-indigo-400 tabular-nums">
               {formatVND(record.totalIncome)}
             </span>
           </div>
           <div className="text-right">
-            <span className="text-[10px] text-slate-400 dark:text-slate-400 block">Tiền mặt</span>
+            <span className="text-[10px] text-slate-400 dark:text-slate-400 block">{t.income.colCash}</span>
             <span className="text-xs font-bold text-slate-800 dark:text-slate-200 tabular-nums">
               {formatVND(record.cash)}
             </span>
@@ -92,19 +95,19 @@ export const IncomeDayCard: React.FC<IncomeDayCardProps> = ({
         {/* Breakdown 3 sub-metrics */}
         <div className="grid grid-cols-3 gap-2 text-xs">
           <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-center">
-            <span className="text-[10px] text-slate-400 dark:text-slate-400 block whitespace-nowrap">Lương CB</span>
+            <span className="text-[10px] text-slate-400 dark:text-slate-400 block whitespace-nowrap">{t.income.colBaseSalary}</span>
             <span className="font-bold text-slate-800 dark:text-slate-200 text-xs tabular-nums whitespace-nowrap block">
               {formatVND(record.baseSalary)}
             </span>
           </div>
           <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-center">
-            <span className="text-[10px] text-amber-500 block whitespace-nowrap">Tiền Bo</span>
+            <span className="text-[10px] text-amber-500 block whitespace-nowrap">{t.income.colTips}</span>
             <span className="font-bold text-amber-600 dark:text-amber-400 text-xs tabular-nums whitespace-nowrap block">
               {record.tips > 0 ? formatVND(record.tips) : '-'}
             </span>
           </div>
           <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-center">
-            <span className="text-[10px] text-emerald-500 block whitespace-nowrap">Thưởng</span>
+            <span className="text-[10px] text-emerald-500 block whitespace-nowrap">{t.income.colBonus}</span>
             <span className="font-bold text-emerald-600 dark:text-emerald-400 text-xs tabular-nums whitespace-nowrap block">
               {record.bonus > 0 ? formatVND(record.bonus) : '-'}
             </span>
@@ -114,7 +117,7 @@ export const IncomeDayCard: React.FC<IncomeDayCardProps> = ({
         {/* Progress bar vs target */}
         <div className="space-y-1 pt-1">
           <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400">
-            <span>Mục tiêu: {formatVND(record.targetCash)}</span>
+            <span>{t.common.target}: {formatVND(record.targetCash)}</span>
             <span className="font-bold text-indigo-600 dark:text-indigo-400">{targetPercent}%</span>
           </div>
           <div className="h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">

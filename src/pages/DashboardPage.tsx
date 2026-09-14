@@ -12,6 +12,8 @@ import { getTodayISO } from '../utils/dateUtils';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface DashboardPageProps {
   records: IncomeRecord[];
   cycleRecords: IncomeRecord[];
@@ -38,6 +40,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   onDeleteRecord,
   onInlineUpdate,
 }) => {
+  const { t } = useLanguage();
   const todayISO = getTodayISO();
   const todayRecord = useMemo(() => {
     return (
@@ -84,7 +87,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
       <div className="space-y-2">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
-          Chỉ số tài chính kỳ này
+          {t.dashboard.metricsTitle}
         </h3>
         <StatsOverviewGrid summary={summary} />
       </div>
@@ -107,10 +110,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100">
-              Nhật ký thu nhập gần đây
+              {t.dashboard.recentLogTitle}
             </h3>
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              Xem nhanh và chỉnh sửa trực tiếp các ngày trong kỳ
+              {t.dashboard.recentLogSubtitle}
             </p>
           </div>
           <Button
@@ -119,7 +122,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             onClick={() => onSelectTab('income')}
             className="text-xs font-bold text-indigo-600 dark:text-indigo-400 gap-1"
           >
-            <span>Xem toàn bộ bảng</span>
+            <span>{t.dashboard.viewAllTable}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Button>
         </div>

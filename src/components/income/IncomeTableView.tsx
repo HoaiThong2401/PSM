@@ -6,6 +6,8 @@ import { AlertCircle, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } f
 
 import { getPaginationPages } from '../../utils/pagination';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface IncomeTableViewProps {
   records: IncomeRecord[];
   onEdit: (record: IncomeRecord) => void;
@@ -25,6 +27,7 @@ export const IncomeTableView: React.FC<IncomeTableViewProps> = ({
   onInlineUpdate,
   initialPageSize = 6,
 }) => {
+  const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(initialPageSize);
 
@@ -54,10 +57,10 @@ export const IncomeTableView: React.FC<IncomeTableViewProps> = ({
         </div>
         <div>
           <h4 className="text-sm font-bold text-slate-800 dark:text-zinc-200">
-            Không tìm thấy bản ghi thu nhập nào
+            {t.income.emptyTitle}
           </h4>
           <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1">
-            Hãy thử thay đổi điều kiện lọc hoặc thêm mới thu nhập cho ngày này.
+            {t.income.emptyDesc}
           </p>
         </div>
       </Card>
@@ -70,15 +73,15 @@ export const IncomeTableView: React.FC<IncomeTableViewProps> = ({
         <table className="w-full text-left border-collapse">
           <thead className="bg-slate-50/90 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-20 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 select-none">
             <tr>
-              <th className="px-4 py-3.5">Thời gian</th>
-              <th className="px-4 py-3.5 text-right">Tiền mặt</th>
-              <th className="px-4 py-3.5 text-right">Lương CB</th>
-              <th className="px-4 py-3.5 text-right">Bo</th>
-              <th className="px-4 py-3.5 text-right">Thưởng</th>
-              <th className="px-4 py-3.5 text-right">Tổng tiền mặt</th>
-              <th className="px-4 py-3.5 text-right">Tổng thu nhập</th>
-              <th className="px-4 py-3.5">Trạng thái</th>
-              <th className="px-4 py-3.5 text-right">Thao tác</th>
+              <th className="px-4 py-3.5">{t.income.colDate}</th>
+              <th className="px-4 py-3.5 text-right">{t.income.colCash}</th>
+              <th className="px-4 py-3.5 text-right">{t.income.colBaseSalary}</th>
+              <th className="px-4 py-3.5 text-right">{t.income.colTips}</th>
+              <th className="px-4 py-3.5 text-right">{t.income.colBonus}</th>
+              <th className="px-4 py-3.5 text-right">{t.income.colTotalCash}</th>
+              <th className="px-4 py-3.5 text-right">{t.income.colTotalIncome}</th>
+              <th className="px-4 py-3.5">{t.income.colStatus}</th>
+              <th className="px-4 py-3.5 text-right">{t.income.colActions}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 bg-white dark:bg-slate-900/50">
@@ -99,11 +102,11 @@ export const IncomeTableView: React.FC<IncomeTableViewProps> = ({
       <div className="px-3 sm:px-4 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 flex flex-col md:flex-row items-center justify-between gap-2.5 text-xs select-none">
         <div className="w-full md:w-auto flex items-center justify-between gap-2 text-slate-500 dark:text-slate-400">
           <span className="text-[11px] sm:text-xs">
-            Hiển thị <span className="font-bold text-slate-800 dark:text-slate-200">{startRecordIndex}-{endRecordIndex}</span> / <span className="font-bold text-slate-800 dark:text-slate-200">{records.length}</span>
+            {t.income.showingText} <span className="font-bold text-slate-800 dark:text-slate-200">{startRecordIndex}-{endRecordIndex}</span> / <span className="font-bold text-slate-800 dark:text-slate-200">{records.length}</span>
           </span>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-[11px]">Trang:</span>
+            <span className="text-slate-400 text-[11px]">{t.income.pageLabel}</span>
             <select
               value={pageSize}
               onChange={(e) => {
@@ -112,9 +115,9 @@ export const IncomeTableView: React.FC<IncomeTableViewProps> = ({
               }}
               className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-lg px-2 py-1 focus:outline-none"
             >
-              <option value={6}>6 / trang</option>
-              <option value={12}>12 / trang</option>
-              <option value={records.length}>Tất cả</option>
+              <option value={6}>6 {t.income.perPage}</option>
+              <option value={12}>12 {t.income.perPage}</option>
+              <option value={records.length}>{t.common.all}</option>
             </select>
           </div>
         </div>

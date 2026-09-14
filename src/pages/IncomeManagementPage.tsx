@@ -6,6 +6,8 @@ import { IncomeCardTimeline } from '../components/income/IncomeCardTimeline';
 import { exportToCSV } from '../utils/exportUtils';
 import { formatDisplayDate } from '../utils/dateUtils';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface IncomeManagementPageProps {
   cycleRecords: IncomeRecord[];
   onOpenAddModal: (record?: IncomeRecord) => void;
@@ -23,6 +25,7 @@ export const IncomeManagementPage: React.FC<IncomeManagementPageProps> = ({
   onDeleteRecord,
   onInlineUpdate,
 }) => {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<DayStatus | 'all'>('all');
   const [sortMode, setSortMode] = useState<IncomeSortMode>('processing_first');
@@ -85,10 +88,10 @@ export const IncomeManagementPage: React.FC<IncomeManagementPageProps> = ({
     <div className="space-y-6 animate-fade-in pb-12">
       <div className="space-y-2">
         <h2 className="text-xl font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
-          Quản lý Thu nhập Theo Ngày
+          {t.income.pageTitle}
         </h2>
         <p className="text-xs text-slate-500 dark:text-zinc-400">
-          Theo dõi, tra cứu, chỉnh sửa inline và xuất dữ liệu chi tiết từng ngày trong kỳ
+          {t.income.pageSubtitle}
         </p>
       </div>
 

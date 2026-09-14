@@ -10,14 +10,15 @@ export function isWeekendOrFriday(dateString: string): boolean {
 }
 
 /**
- * Returns Vietnamese day of week label (e.g. "Thứ 2", "Chủ nhật")
+ * Returns day of week label (e.g. "Thứ 2", "Chủ nhật" in VI or "Mon", "Sun" in EN)
  */
-export function getDayOfWeekLabel(dateString: string): string {
+export function getDayOfWeekLabel(dateString: string, lang: 'vi' | 'en' = 'vi'): string {
   const [y, m, d] = dateString.split('-').map(Number);
   const date = new Date(y, m - 1, d);
   const day = date.getDay();
-  const days = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
-  return days[day];
+  const viDays = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+  const enDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return lang === 'en' ? enDays[day] : viDays[day];
 }
 
 /**

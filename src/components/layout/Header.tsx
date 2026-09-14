@@ -6,6 +6,8 @@ import type { IncomeCycle } from '../../types/income';
 import type { UserProfile } from '../../types/auth';
 import type { UserSettings } from '../../types/settings';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface HeaderProps {
   title: string;
   subtitle?: string;
@@ -31,6 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   settings,
   onToggleTheme,
 }) => {
+  const { language, toggleLanguage, t } = useLanguage();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -61,23 +64,32 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <CycleSelector
           cycles={cycles}
           selectedCycleId={selectedCycleId}
           onSelectCycle={onSelectCycle}
         />
 
+        {/* Language Switcher */}
+        <button
+          onClick={toggleLanguage}
+          title={t.header.languageToggle}
+          className="px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center gap-1 shrink-0 border border-slate-200/60 dark:border-slate-700/60"
+        >
+          <span>{language === 'vi' ? '🇻🇳 VI' : '🇬🇧 EN'}</span>
+        </button>
+
         <button
           onClick={onToggleTheme}
-          title="Chuyển chế độ sáng/tối"
+          title={t.header.themeToggle}
           className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shrink-0"
         >
           {settings.theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
         </button>
 
         <button
-          title="Thông báo"
+          title={t.header.notifications}
           className="hidden sm:inline-flex relative p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shrink-0"
         >
           <Bell className="w-4 h-4" />
@@ -92,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
           className="font-semibold shadow-indigo-500/20 px-2.5 sm:px-3.5 shrink-0"
         >
           <Plus className="w-4 h-4 shrink-0" />
-          <span className="hidden sm:inline">Thêm thu nhập</span>
+          <span className="hidden sm:inline">{t.header.addIncome}</span>
         </Button>
 
         {/* Mobile User Avatar & Logout Popover */}

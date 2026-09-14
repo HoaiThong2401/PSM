@@ -16,10 +16,13 @@ import { IncomeFormModal } from './components/income/IncomeFormModal';
 import { ConfirmDialog } from './components/ui/ConfirmDialog';
 import type { IncomeRecord, DayStatus } from './types/income';
 
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+
 function AppContent() {
   const { user, isAuthenticated, isLoading: authLoading, logout, isSupabaseLive } = useAuth();
   const { settings, updateSettings, resetSettings } = useSettings(user?.id);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
   const [modalOpen, setModalOpen] = useState(false);
@@ -75,8 +78,8 @@ function AppContent() {
     upsertRecord(data);
     toast({
       type: 'success',
-      title: 'Đã lưu thu nhập',
-      description: `Thu nhập ngày ${data.date} đã được cập nhật thành công.`,
+      title: t.common.save,
+      description: `${t.common.date} ${data.date}`,
     });
   };
 
@@ -86,12 +89,12 @@ function AppContent() {
     setDeleteConfirmId(null);
     toast({
       type: 'info',
-      title: 'Đã xóa bản ghi thu nhập',
+      title: t.common.delete,
       action: {
-        label: 'Hoàn tác',
+        label: t.common.cancel,
         onClick: () => {
           undoLastDelete();
-          toast({ type: 'success', title: 'Đã khôi phục bản ghi' });
+          toast({ type: 'success', title: t.common.save });
         },
       },
     });
@@ -164,9 +167,10 @@ function AppContent() {
         isOpen={!!deleteConfirmId}
         onClose={() => setDeleteConfirmId(null)}
         onConfirm={handleConfirmDelete}
-        title="Xác nhận xóa bản ghi"
-        message="Bạn có chắc chắn muốn xóa bản ghi thu nhập này không? Bạn vẫn có thể hoàn tác ngay sau khi xóa."
-        confirmText="Xóa bản ghi"
+        title={t.common.confirmDeleteTitle}
+        message={t.common.confirmDeleteDesc}
+        confirmText={t.common.delete}
+        cancelText={t.common.cancel}
         variant="danger"
       />
     </MainLayout>
@@ -176,11 +180,13 @@ function AppContent() {
 export function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ToastProvider>
-          <AppContent />
-        </ToastProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <AppContent />
+          </ToastProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </ErrorBoundary>
   );
 }

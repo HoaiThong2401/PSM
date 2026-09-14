@@ -3,6 +3,8 @@ import { Search, LayoutList, Table, Download, Plus, ArrowUpDown } from 'lucide-r
 import { Button } from '../ui/Button';
 import type { DayStatus, IncomeSortMode } from '../../types/income';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface IncomeFilterBarProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
@@ -28,6 +30,8 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
   onExportCSV,
   onOpenAddModal,
 }) => {
+  const { t } = useLanguage();
+
   const statusOptions: Array<{
     id: DayStatus | 'all';
     label: string;
@@ -36,31 +40,31 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
   }> = [
     {
       id: 'all',
-      label: 'Tất cả',
+      label: t.income.filterAll,
       dotColor: 'bg-indigo-500',
       activeClass: 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/30',
     },
     {
       id: 'processing',
-      label: 'Đang xử lý',
+      label: t.income.filterProcessing,
       dotColor: 'bg-amber-500',
       activeClass: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40 ring-1 ring-amber-500/30 font-bold',
     },
     {
       id: 'success',
-      label: 'Đạt mục tiêu',
+      label: t.income.filterSuccess,
       dotColor: 'bg-emerald-500',
       activeClass: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/40 ring-1 ring-emerald-500/30 font-bold',
     },
     {
       id: 'failed',
-      label: 'Chưa đạt',
+      label: t.income.filterFailed,
       dotColor: 'bg-rose-500',
       activeClass: 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/40 ring-1 ring-rose-500/30 font-bold',
     },
     {
       id: 'not_started',
-      label: 'Chưa làm',
+      label: t.income.filterNotStarted,
       dotColor: 'bg-slate-400',
       activeClass: 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/40 ring-1 ring-slate-500/30 font-bold',
     },
@@ -75,7 +79,7 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
           <input
             type="text"
-            placeholder="Tìm theo ngày (VD: 14/09, 2026-09)..."
+            placeholder={t.income.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border border-slate-200/80 dark:border-slate-800 rounded-2xl pl-10 pr-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-xs"
@@ -89,7 +93,7 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
             <button
               type="button"
               onClick={() => onViewModeChange('table')}
-              title="Chuyển chế độ xem Bảng"
+              title={t.income.tableView}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-200 ${
                 viewMode === 'table'
                   ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
@@ -97,12 +101,12 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
               }`}
             >
               <Table className="w-3.5 h-3.5" />
-              <span>Bảng</span>
+              <span>{t.income.tableView}</span>
             </button>
             <button
               type="button"
               onClick={() => onViewModeChange('timeline')}
-              title="Chuyển chế độ xem Thẻ"
+              title={t.income.cardView}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-200 ${
                 viewMode === 'timeline'
                   ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
@@ -110,7 +114,7 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
               }`}
             >
               <LayoutList className="w-3.5 h-3.5" />
-              <span>Thẻ</span>
+              <span>{t.income.cardView}</span>
             </button>
           </div>
 
@@ -122,7 +126,7 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
               className="text-xs font-bold rounded-xl border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Xuất CSV</span>
+              <span className="hidden sm:inline">{t.income.exportCsv}</span>
             </Button>
 
             <Button
@@ -132,7 +136,7 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
               className="text-xs font-bold rounded-xl shadow-md shadow-indigo-500/20"
             >
               <Plus className="w-3.5 h-3.5 mr-0.5" />
-              <span>Thêm mới</span>
+              <span>{t.income.addNew}</span>
             </Button>
           </div>
         </div>
@@ -172,11 +176,11 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
               onChange={(e) => onSortModeChange(e.target.value as IncomeSortMode)}
               className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-xs cursor-pointer appearance-none"
             >
-              <option value="processing_first">🎯 Ưu tiên Processing</option>
-              <option value="recently_updated">⚡ Vừa cập nhật gần đây</option>
-              <option value="date_desc">📅 Mới nhất ➔ Cũ nhất</option>
-              <option value="date_asc">📅 Cũ nhất ➔ Mới nhất</option>
-              <option value="income_desc">💰 Thu nhập cao nhất</option>
+              <option value="processing_first">{t.income.sortProcessingFirst}</option>
+              <option value="recently_updated">{t.income.sortRecentlyUpdated}</option>
+              <option value="date_desc">{t.income.sortDateDesc}</option>
+              <option value="date_asc">{t.income.sortDateAsc}</option>
+              <option value="income_desc">{t.income.sortIncomeDesc}</option>
             </select>
           </div>
         </div>

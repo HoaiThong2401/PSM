@@ -4,6 +4,8 @@ import type { CycleSummary, IncomeCycle } from '../../types/income';
 import { formatVND } from '../../utils/currency';
 import { CheckCircle2, XCircle, Clock, CalendarDays, Zap } from 'lucide-react';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface MonthlySummaryWidgetProps {
   summary: CycleSummary;
   currentCycle?: IncomeCycle;
@@ -13,15 +15,25 @@ export const MonthlySummaryWidget: React.FC<MonthlySummaryWidgetProps> = ({
   summary,
   currentCycle,
 }) => {
+  const { language } = useLanguage();
+
+  const cycleTitle = currentCycle
+    ? language === 'vi'
+      ? `Tổng kết Kỳ Tháng ${currentCycle.month}/${currentCycle.year}`
+      : `Summary for Cycle ${currentCycle.month}/${currentCycle.year}`
+    : language === 'vi'
+    ? 'Tổng kết Kỳ'
+    : 'Cycle Summary';
+
   return (
     <Card className="h-full flex flex-col justify-between">
       <CardHeader>
         <div className="flex items-center gap-2">
           <CalendarDays className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-          <CardTitle>Tổng kết Kỳ {currentCycle ? `Tháng ${currentCycle.month}/${currentCycle.year}` : ''}</CardTitle>
+          <CardTitle>{cycleTitle}</CardTitle>
         </div>
         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
-          {summary.totalDays} ngày tổng cộng
+          {summary.totalDays} {language === 'vi' ? 'ngày tổng cộng' : 'days total'}
         </span>
       </CardHeader>
 
@@ -29,7 +41,7 @@ export const MonthlySummaryWidget: React.FC<MonthlySummaryWidgetProps> = ({
         <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
           <div>
             <span className="text-[11px] font-medium text-slate-400 dark:text-slate-400 block">
-              TB thu nhập / ngày
+              {language === 'vi' ? 'TB thu nhập / ngày' : 'Avg Income / day'}
             </span>
             <span className="text-base font-bold text-slate-900 dark:text-slate-100 tabular-nums">
               {formatVND(summary.averageIncomePerDay)}
@@ -37,7 +49,7 @@ export const MonthlySummaryWidget: React.FC<MonthlySummaryWidgetProps> = ({
           </div>
           <div>
             <span className="text-[11px] font-medium text-slate-400 dark:text-slate-400 block">
-              TB tiền mặt / ngày
+              {language === 'vi' ? 'TB tiền mặt / ngày' : 'Avg Cash / day'}
             </span>
             <span className="text-base font-bold text-indigo-600 dark:text-indigo-400 tabular-nums">
               {formatVND(summary.averageCashPerDay)}
@@ -47,7 +59,9 @@ export const MonthlySummaryWidget: React.FC<MonthlySummaryWidgetProps> = ({
 
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-slate-600 dark:text-slate-300">Tỷ lệ hoàn thành mục tiêu</span>
+            <span className="font-semibold text-slate-600 dark:text-slate-300">
+              {language === 'vi' ? 'Tỷ lệ hoàn thành mục tiêu' : 'Target Completion Rate'}
+            </span>
             <span className="font-bold text-emerald-600 dark:text-emerald-400">{summary.successRate}%</span>
           </div>
           <div className="h-2.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 flex overflow-hidden">

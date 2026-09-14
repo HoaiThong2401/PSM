@@ -5,6 +5,7 @@ export interface UserSettings {
   defaultBaseSalary: number; // Lương cơ bản mặc định mỗi ngày
   currency: string; // 'VND'
   theme: 'light' | 'dark' | 'system';
+  language?: 'vi' | 'en';
   enableSoundEffects: boolean;
   enableCelebrationConfetti: boolean;
 }
@@ -16,6 +17,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   defaultBaseSalary: 200000,
   currency: 'VND',
   theme: 'dark',
+  language: 'vi',
   enableSoundEffects: true,
   enableCelebrationConfetti: true,
 };

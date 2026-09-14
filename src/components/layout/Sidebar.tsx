@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import type { UserProfile } from '../../types/auth';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 export type NavTab = 'dashboard' | 'income' | 'analytics' | 'settings';
 
 interface SidebarProps {
@@ -25,25 +27,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
   user,
   onLogout,
 }) => {
+  const { t } = useLanguage();
+
   const navItems: Array<{ id: NavTab; label: string; icon: React.ReactNode; badge?: string }> = [
     {
       id: 'dashboard',
-      label: 'Dashboard',
+      label: t.nav.dashboard,
       icon: <LayoutDashboard className="w-4 h-4" />,
     },
     {
       id: 'income',
-      label: 'Thu nhập',
+      label: t.nav.income,
       icon: <WalletCards className="w-4 h-4" />,
     },
     {
       id: 'analytics',
-      label: 'Lịch sử & Thống kê',
+      label: t.nav.analytics,
       icon: <BarChart3 className="w-4 h-4" />,
     },
     {
       id: 'settings',
-      label: 'Cài đặt',
+      label: t.nav.settings,
       icon: <Settings className="w-4 h-4" />,
     },
   ];
@@ -72,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="space-y-1">
           <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400 pb-1">
-            Menu chính
+            {t.nav.mainMenu}
           </p>
           {navItems.map((item) => {
             const isActive = currentTab === item.id;
@@ -105,10 +109,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-3.5 rounded-xl bg-gradient-to-br from-indigo-50/50 to-sky-50/50 dark:from-slate-800/50 dark:to-indigo-950/30 border border-indigo-100/60 dark:border-slate-700/50 text-xs text-slate-600 dark:text-slate-300 space-y-1 shadow-xs">
           <div className="flex items-center gap-1.5 font-semibold text-indigo-600 dark:text-indigo-400">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Mẹo kiếm tiền</span>
+            <span>{t.nav.proTipTitle}</span>
           </div>
           <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-            Mục tiêu cuối tuần cao hơn để tận dụng lượng khách tăng. Cố gắng đạt 100% chỉ tiêu hôm nay!
+            {t.nav.proTipDesc}
           </p>
         </div>
       </div>
@@ -123,7 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
             <div className="min-w-0">
               <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
-                {user?.name || 'Người dùng'}
+                {user?.name || t.header.userFallback}
               </p>
               {user?.email && (
                 <p className="text-[10px] text-slate-400 dark:text-slate-400 truncate">
@@ -134,7 +138,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <button
             onClick={onLogout}
-            title="Đăng xuất"
+            title={t.nav.logout}
             className="p-1.5 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 rounded-lg hover:bg-white dark:hover:bg-slate-700 transition-colors shrink-0"
           >
             <LogOut className="w-4 h-4" />

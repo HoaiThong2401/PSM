@@ -9,6 +9,8 @@ import type { IncomeRecord } from '../../types/income';
 import type { UserSettings } from '../../types/settings';
 import { getTargetForDate } from '../../utils/calculation';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface TodayGoalHeroProps {
   todayRecord?: IncomeRecord;
   settings: UserSettings;
@@ -20,8 +22,9 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
   settings,
   onQuickUpdateCash,
 }) => {
+  const { t, language } = useLanguage();
   const todayISO = getTodayISO();
-  const dayLabel = getDayOfWeekLabel(todayISO);
+  const dayLabel = getDayOfWeekLabel(todayISO, language);
   const formattedToday = formatDisplayDate(todayISO);
 
   const target = todayRecord?.targetCash || getTargetForDate(todayISO, settings);
@@ -64,39 +67,39 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
             />
             {isGoalReached && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30 animate-pulse">
-                <Sparkles className="w-3 h-3" /> Đạt chỉ tiêu!
+                <Sparkles className="w-3 h-3" /> {t.dashboard.goalAchievedPill}
               </span>
             )}
           </div>
 
           <div>
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              Tiến độ Mục tiêu Tiền mặt Hôm nay
+              {t.dashboard.todayHeroTitle}
             </h2>
             <p className="text-xs sm:text-sm text-indigo-200/80 mt-1 leading-relaxed">
               {isGoalReached
-                ? `Xuất sắc! Bạn đã vượt mục tiêu tiền mặt ngày hôm nay với ${formatVND(actualCash)}.`
+                ? `${t.dashboard.goalReachedDesc} ${formatVND(actualCash)}.`
                 : remaining > 0
-                ? `Còn thiếu ${formatVND(remaining)} nữa để hoàn thành mục tiêu ngày ${dayLabel}.`
-                : 'Hãy bắt đầu ghi nhận các khoản thu nhập đầu tiên trong ngày!'}
+                ? `${t.dashboard.goalMissingDesc} ${formatVND(remaining)}.`
+                : t.dashboard.goalStartDesc}
             </p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-1">
             <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
-              <span className="text-[11px] font-medium text-indigo-200/70 block">Mục tiêu ngày</span>
+              <span className="text-[11px] font-medium text-indigo-200/70 block">{t.dashboard.todayTarget}</span>
               <span className="text-base sm:text-lg font-bold text-white tabular-nums">
                 {formatVND(target)}
               </span>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
-              <span className="text-[11px] font-medium text-indigo-200/70 block">Tiền mặt thực tế</span>
+              <span className="text-[11px] font-medium text-indigo-200/70 block">{t.dashboard.actualCash}</span>
               <span className="text-base sm:text-lg font-bold text-indigo-300 tabular-nums">
                 {formatVND(actualCash)}
               </span>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm col-span-2 sm:col-span-1">
-              <span className="text-[11px] font-medium text-indigo-200/70 block">Tổng thu nhập hôm nay</span>
+              <span className="text-[11px] font-medium text-indigo-200/70 block">{t.dashboard.totalTodayIncome}</span>
               <span className="text-base sm:text-lg font-bold text-emerald-300 tabular-nums">
                 {formatVND(todayRecord?.totalIncome || actualCash)}
               </span>
@@ -132,7 +135,7 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
               <span className="text-2xl font-black text-white tabular-nums">{percentage}%</span>
               <span className="text-[10px] font-semibold text-indigo-200 uppercase tracking-wider">
-                {isGoalReached ? 'Hoàn thành' : 'Đạt được'}
+                {isGoalReached ? t.dashboard.completed : t.dashboard.achieved}
               </span>
             </div>
           </div>
@@ -141,19 +144,19 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
             <Button
               variant={isGoalReached ? 'success' : 'primary'}
               size="sm"
-              onClick={() => {
-                if (isGoalReached) handleCelebrate();
-                onQuickUpdateCash(todayRecord);
+              onClick={(e) => {
+                e?.stopPropagation();
+                handleOpenInput();
               }}
               className="w-full text-xs font-bold shadow-md bg-white text-indigo-900 hover:bg-indigo-50"
             >
               {isGoalReached ? (
                 <>
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Chúc mừng! Cập nhật thêm
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" /> {t.dashboard.celebrateBtn}
                 </>
               ) : (
                 <>
-                  <ArrowUpRight className="w-3.5 h-3.5" /> Nhập thu nhập hôm nay
+                  <ArrowUpRight className="w-3.5 h-3.5" /> {t.dashboard.addIncomeBtn}
                 </>
               )}
             </Button>

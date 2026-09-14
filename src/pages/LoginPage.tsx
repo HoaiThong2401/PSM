@@ -5,8 +5,11 @@ import { Input } from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../components/ui/Toast';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 export const LoginPage: React.FC = () => {
   const { loginWithGoogle, loginWithPassword, signUpWithPassword, loginWithDemo, isLoading } = useAuth();
+  const { language, toggleLanguage } = useLanguage();
   const { toast } = useToast();
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
@@ -14,10 +17,12 @@ export const LoginPage: React.FC = () => {
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isVi = language === 'vi';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      toast({ type: 'error', title: 'Vui lòng điền đầy đủ thông tin' });
+      toast({ type: 'error', title: isVi ? 'Vui lòng điền đầy đủ thông tin' : 'Please fill all required fields' });
       return;
     }
 
@@ -25,14 +30,18 @@ export const LoginPage: React.FC = () => {
     try {
       if (authMode === 'login') {
         await loginWithPassword(email, password);
-        toast({ type: 'success', title: 'Đăng nhập thành công!' });
+        toast({ type: 'success', title: isVi ? 'Đăng nhập thành công!' : 'Logged in successfully!' });
       } else {
         await signUpWithPassword(email, password, name);
-        toast({ type: 'success', title: 'Đăng ký thành công!', description: 'Chào mừng bạn đến với DailyIncome Pro.' });
+        toast({
+          type: 'success',
+          title: isVi ? 'Đăng ký thành công!' : 'Account created successfully!',
+          description: isVi ? 'Chào mừng bạn đến với DailyIncome Pro.' : 'Welcome to DailyIncome Pro.',
+        });
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Xác thực không thành công';
-      toast({ type: 'error', title: 'Lỗi xác thực', description: msg });
+      const msg = err instanceof Error ? err.message : (isVi ? 'Xác thực không thành công' : 'Authentication failed');
+      toast({ type: 'error', title: isVi ? 'Lỗi xác thực' : 'Authentication error', description: msg });
     } finally {
       setIsSubmitting(false);
     }
@@ -44,14 +53,26 @@ export const LoginPage: React.FC = () => {
     } catch {
       toast({
         type: 'error',
-        title: 'Chưa bật Google Provider',
-        description: 'Vui lòng dùng Email & Mật khẩu bên dưới hoặc vào Supabase Dashboard -> Auth -> Providers để bật Google.',
+        title: isVi ? 'Chưa bật Google Provider' : 'Google Provider Not Enabled',
+        description: isVi
+          ? 'Vui lòng dùng Email & Mật khẩu bên dưới hoặc vào Supabase Dashboard -> Auth -> Providers để bật Google.'
+          : 'Please use Email & Password below or enable Google provider in Supabase Dashboard.',
       });
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#070b14] flex items-center justify-center p-4 sm:p-6 text-slate-900 dark:text-slate-100 relative overflow-hidden">
+      {/* Top right language switch */}
+      <div className="absolute top-4 right-4 z-20">
+        <button
+          onClick={toggleLanguage}
+          className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 border border-slate-200/80 dark:border-slate-700/80 shadow-xs"
+        >
+          <span>{isVi ? '🇻🇳 Tiếng Việt' : '🇬🇧 English'}</span>
+        </button>
+      </div>
+
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-600/10 dark:bg-indigo-600/15 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden bg-white dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-2xl relative z-10 backdrop-blur-xl">
@@ -72,32 +93,34 @@ export const LoginPage: React.FC = () => {
 
             <div className="space-y-2.5">
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight text-white">
-                Quản lý Thu nhập Cá nhân Hằng ngày
+                {isVi ? 'Quản lý Thu nhập Cá nhân Hằng ngày' : 'Daily Personal Income Management'}
               </h2>
               <p className="text-sm text-indigo-200/80 leading-relaxed">
-                Đồng bộ dữ liệu thời gian thực trên PostgreSQL Cloud và kiểm soát mục tiêu tiền mặt chính xác.
+                {isVi
+                  ? 'Đồng bộ dữ liệu thời gian thực trên PostgreSQL Cloud và kiểm soát mục tiêu tiền mặt chính xác.'
+                  : 'Real-time PostgreSQL Cloud data synchronization and precise cash target monitoring.'}
               </p>
             </div>
 
             <div className="space-y-3 pt-2">
               <div className="flex items-center gap-3 text-xs sm:text-sm text-indigo-100">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Theo dõi mục tiêu tiền mặt tự động</span>
+                <span>{isVi ? 'Theo dõi mục tiêu tiền mặt tự động' : 'Automatic daily cash target tracking'}</span>
               </div>
               <div className="flex items-center gap-3 text-xs sm:text-sm text-indigo-100">
                 <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Tự động tính lương & phân loại nguồn thu</span>
+                <span>{isVi ? 'Tự động tính lương & phân loại nguồn thu' : 'Automated wage calculation & income breakdown'}</span>
               </div>
               <div className="flex items-center gap-3 text-xs sm:text-sm text-indigo-100">
                 <BarChart2 className="w-4 h-4 text-sky-400 shrink-0" />
-                <span>Báo cáo chu kỳ tháng & xuất dữ liệu CSV/JSON</span>
+                <span>{isVi ? 'Báo cáo chu kỳ tháng & xuất dữ liệu CSV/JSON' : 'Monthly cycle analytics & CSV/JSON export'}</span>
               </div>
             </div>
           </div>
 
           <div className="pt-8 text-[11px] text-indigo-300/70 flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>Bảo mật PostgreSQL Row Level Security (RLS)</span>
+            <span>{isVi ? 'Bảo mật PostgreSQL Row Level Security (RLS)' : 'Secured with PostgreSQL Row Level Security (RLS)'}</span>
           </div>
         </div>
 
@@ -105,7 +128,7 @@ export const LoginPage: React.FC = () => {
         <div className="p-8 sm:p-10 flex flex-col justify-center space-y-5 dark:bg-slate-900/90">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              {authMode === 'login' ? 'Đăng nhập tài khoản' : 'Tạo tài khoản mới'}
+              {authMode === 'login' ? (isVi ? 'Đăng nhập tài khoản' : 'Sign In') : (isVi ? 'Tạo tài khoản mới' : 'Create Account')}
             </h3>
             <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-semibold">
               <button
@@ -117,7 +140,7 @@ export const LoginPage: React.FC = () => {
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >
-                Đăng nhập
+                {isVi ? 'Đăng nhập' : 'Sign In'}
               </button>
               <button
                 type="button"
@@ -128,7 +151,7 @@ export const LoginPage: React.FC = () => {
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >
-                Đăng ký
+                {isVi ? 'Đăng ký' : 'Sign Up'}
               </button>
             </div>
           </div>
