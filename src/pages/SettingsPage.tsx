@@ -6,6 +6,7 @@ import { Input } from '../components/ui/Input';
 import { formatNumber, parseVNDInput } from '../utils/currency';
 import { exportToJSON } from '../utils/exportUtils';
 import { useToast } from '../components/ui/Toast';
+import { PwaInstallCard } from '../components/settings/PwaInstallCard';
 import { isSupabaseConfigured } from '../services/supabaseClient';
 import { Sliders, Moon, Sun, Download, RotateCcw, Database, CheckCircle, AlertCircle } from 'lucide-react';
 
@@ -56,9 +57,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           Cài đặt & Tùy chỉnh Quy tắc
         </h2>
         <p className="text-xs text-slate-500 dark:text-zinc-400">
-          Cấu hình mục tiêu tiền mặt, cơ sở dữ liệu PostgreSQL và chu kỳ tính lương
+          Cấu hình mục tiêu tiền mặt, cơ sở dữ liệu PostgreSQL và cài đặt ứng dụng
         </p>
       </div>
+
+      <PwaInstallCard />
 
       {/* Database Connection Card */}
       <Card className="p-5 border-l-4 border-l-indigo-600">
@@ -85,13 +88,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                 {isSupabaseLive
                   ? 'Dữ liệu thu nhập và cài đặt được lưu trữ đồng bộ trực tiếp trên PostgreSQL Cloud.'
-                  : 'Để kết nối PostgreSQL thật: Mở file .env, điền VITE_SUPABASE_URL & VITE_SUPABASE_ANON_KEY từ Supabase, sau đó dán script supabase/schema.sql vào SQL Editor.'}
+                  : 'Để kết nối PostgreSQL: Mở file .env, điền VITE_SUPABASE_URL & VITE_SUPABASE_ANON_KEY từ Supabase.'}
               </p>
             </div>
           </div>
         </div>
       </Card>
 
+      {/* Rules Config Card */}
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-zinc-800">
           <Sliders className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -106,7 +110,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               label="Mục tiêu Thứ 2 - Thứ 5 (VNĐ)"
               value={weekdayTarget}
               onChange={(e) => setWeekdayTarget(formatNumber(parseVNDInput(e.target.value)))}
-              helperText="Áp dụng cho ngày làm việc trong tuần (Mặc định 200.000 ₫)"
+              helperText="Áp dụng cho ngày trong tuần (Mặc định 200.000 ₫)"
             />
 
             <Input
@@ -157,6 +161,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         </form>
       </Card>
 
+      {/* Theme Card */}
       <Card className="p-6 space-y-4">
         <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800">
           <Moon className="w-5 h-5 text-sky-500" />
@@ -189,6 +194,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         </div>
       </Card>
 
+      {/* Backup Card */}
       <Card className="p-6 space-y-4">
         <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800">
           <Download className="w-5 h-5 text-slate-500" />
