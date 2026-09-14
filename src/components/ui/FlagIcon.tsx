@@ -9,26 +9,26 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ country, className = 'w-4 h-
   if (country === 'vn') {
     return (
       <svg
-        viewBox="0 0 30 20"
-        className={`inline-block rounded-xs shadow-xs shrink-0 overflow-hidden ${className}`}
+        viewBox="0 0 300 200"
+        className={`inline-block align-middle rounded-[2px] shadow-xs shrink-0 ${className}`}
         aria-label="Vietnam Flag"
       >
         {/* Red Background */}
-        <rect width="30" height="20" fill="#DA251D" />
-        {/* Yellow 5-point star centered at (15, 10), outer radius 6, inner radius ~2.29 */}
+        <rect width="300" height="200" fill="#DA251D" />
+        {/* Yellow 5-point star centered at (150, 100), R=60 */}
         <polygon
           fill="#FFFF00"
           points="
-            15,4.0
-            16.76,9.43
-            22.47,9.43
-            17.85,12.78
-            19.61,18.21
-            15,14.86
-            10.39,18.21
-            12.15,12.78
-            7.53,9.43
-            13.24,9.43
+            150,40
+            163.47,81.45
+            207.06,81.45
+            171.80,107.08
+            185.27,148.54
+            150,122.92
+            114.73,148.54
+            128.20,107.08
+            92.94,81.45
+            136.53,81.45
           "
         />
       </svg>
@@ -38,26 +38,21 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ country, className = 'w-4 h-
   // UK Flag (Union Jack)
   return (
     <svg
-      viewBox="0 0 60 40"
-      className={`inline-block rounded-xs shadow-xs shrink-0 overflow-hidden ${className}`}
+      viewBox="0 0 600 400"
+      className={`inline-block align-middle rounded-[2px] shadow-xs shrink-0 ${className}`}
       aria-label="UK Flag"
     >
-      <clipPath id="uk-clip">
-        <rect width="60" height="40" rx="1" />
-      </clipPath>
-      <g clipPath="url(#uk-clip)">
-        {/* Navy blue background */}
-        <rect width="60" height="40" fill="#012169" />
-        {/* White diagonals */}
-        <path d="M0 0 L60 40 M60 0 L0 40" stroke="#FFFFFF" strokeWidth="8" />
-        {/* Red diagonals */}
-        <path d="M0 0 L60 40" stroke="#C8102E" strokeWidth="4" />
-        <path d="M60 0 L0 40" stroke="#C8102E" strokeWidth="4" />
-        {/* White cross */}
-        <path d="M30 0 v40 M0 20 h60" stroke="#FFFFFF" strokeWidth="12" />
-        {/* Red cross */}
-        <path d="M30 0 v40 M0 20 h60" stroke="#C8102E" strokeWidth="7" />
-      </g>
+      {/* Navy blue background */}
+      <rect width="600" height="400" fill="#012169" />
+      {/* White diagonals */}
+      <path d="M0 0 L600 400 M600 0 L0 400" stroke="#FFFFFF" strokeWidth="80" />
+      {/* Red diagonals */}
+      <path d="M0 0 L600 400" stroke="#C8102E" strokeWidth="40" />
+      <path d="M600 0 L0 400" stroke="#C8102E" strokeWidth="40" />
+      {/* White cross */}
+      <path d="M300 0 v400 M0 200 h600" stroke="#FFFFFF" strokeWidth="120" />
+      {/* Red cross */}
+      <path d="M300 0 v400 M0 200 h600" stroke="#C8102E" strokeWidth="70" />
     </svg>
   );
 };

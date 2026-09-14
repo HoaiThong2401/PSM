@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Plus, Bell, Moon, Sun, LogOut } from 'lucide-react';
-import { Button } from '../ui/Button';
+import { Bell, Moon, Sun, LogOut } from 'lucide-react';
 import { CycleSelector } from './CycleSelector';
 import type { IncomeCycle } from '../../types/income';
 import type { UserProfile } from '../../types/auth';
@@ -15,7 +14,7 @@ interface HeaderProps {
   cycles: IncomeCycle[];
   selectedCycleId: string;
   onSelectCycle: (id: string) => void;
-  onOpenAddModal: () => void;
+  onOpenAddModal?: () => void;
   user: UserProfile | null;
   onLogout?: () => void;
   settings: UserSettings;
@@ -28,7 +27,6 @@ export const Header: React.FC<HeaderProps> = ({
   cycles,
   selectedCycleId,
   onSelectCycle,
-  onOpenAddModal,
   user,
   onLogout,
   settings,
@@ -98,16 +96,6 @@ export const Header: React.FC<HeaderProps> = ({
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-500 animate-ping" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-600" />
         </button>
-
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={onOpenAddModal}
-          className="font-semibold shadow-indigo-500/20 px-2.5 sm:px-3.5 shrink-0"
-        >
-          <Plus className="w-4 h-4 shrink-0" />
-          <span className="hidden sm:inline">{t.header.addIncome}</span>
-        </Button>
 
         {/* Mobile User Avatar & Logout Popover */}
         <div className="relative flex md:hidden items-center shrink-0 ml-0.5" ref={menuRef}>
