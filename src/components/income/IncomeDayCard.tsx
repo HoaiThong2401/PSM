@@ -44,12 +44,12 @@ export const IncomeDayCard: React.FC<IncomeDayCardProps> = ({
       <div className="space-y-3">
         {/* Header: Date + Status Badge */}
         <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800/80">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors whitespace-nowrap">
               {formatDisplayDate(record.date)}
             </span>
             <span
-              className={`text-[11px] px-2 py-0.5 rounded-md font-semibold ${
+              className={`text-[11px] px-1.5 py-0.5 rounded-md font-semibold whitespace-nowrap ${
                 isWeekend
                   ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400'
                   : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
@@ -65,9 +65,9 @@ export const IncomeDayCard: React.FC<IncomeDayCardProps> = ({
               handleToggleStatus();
             }}
             title="Nhấp để chuyển đổi trạng thái"
-            className="focus:outline-none"
+            className="focus:outline-none shrink-0"
           >
-            <Badge status={record.status} size="sm" interactive />
+            <Badge status={record.status} size="sm" interactive className="whitespace-nowrap" />
           </button>
         </div>
 
@@ -92,20 +92,20 @@ export const IncomeDayCard: React.FC<IncomeDayCardProps> = ({
         {/* Breakdown 3 sub-metrics */}
         <div className="grid grid-cols-3 gap-2 text-xs">
           <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-center">
-            <span className="text-[10px] text-slate-400 dark:text-slate-400 block">Lương CB</span>
-            <span className="font-bold text-slate-800 dark:text-slate-200 text-xs tabular-nums">
+            <span className="text-[10px] text-slate-400 dark:text-slate-400 block whitespace-nowrap">Lương CB</span>
+            <span className="font-bold text-slate-800 dark:text-slate-200 text-xs tabular-nums whitespace-nowrap block">
               {formatVND(record.baseSalary)}
             </span>
           </div>
           <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-center">
-            <span className="text-[10px] text-amber-500 block">Tiền Bo</span>
-            <span className="font-bold text-amber-600 dark:text-amber-400 text-xs tabular-nums">
+            <span className="text-[10px] text-amber-500 block whitespace-nowrap">Tiền Bo</span>
+            <span className="font-bold text-amber-600 dark:text-amber-400 text-xs tabular-nums whitespace-nowrap block">
               {record.tips > 0 ? formatVND(record.tips) : '-'}
             </span>
           </div>
           <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-center">
-            <span className="text-[10px] text-emerald-500 block">Thưởng</span>
-            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-xs tabular-nums">
+            <span className="text-[10px] text-emerald-500 block whitespace-nowrap">Thưởng</span>
+            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-xs tabular-nums whitespace-nowrap block">
               {record.bonus > 0 ? formatVND(record.bonus) : '-'}
             </span>
           </div>

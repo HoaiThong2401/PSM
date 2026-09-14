@@ -23,7 +23,7 @@ export const IncomeTableView: React.FC<IncomeTableViewProps> = ({
   onEdit,
   onDelete,
   onInlineUpdate,
-  initialPageSize = 5,
+  initialPageSize = 6,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(initialPageSize);
@@ -112,8 +112,8 @@ export const IncomeTableView: React.FC<IncomeTableViewProps> = ({
               }}
               className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-lg px-2 py-1 focus:outline-none"
             >
-              <option value={5}>5 / trang</option>
-              <option value={10}>10 / trang</option>
+              <option value={6}>6 / trang</option>
+              <option value={12}>12 / trang</option>
               <option value={records.length}>Tất cả</option>
             </select>
           </div>

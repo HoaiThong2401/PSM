@@ -29,7 +29,7 @@ export const IncomeCardTimeline: React.FC<IncomeCardTimelineProps> = ({
   onEdit,
   onDelete,
   onInlineUpdate,
-  initialPageSize = 5,
+  initialPageSize = 6,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(initialPageSize);
