@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider, useToast } from './components/ui/Toast';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { useSettings } from './hooks/useSettings';
 import { useIncomeData } from './hooks/useIncomeData';
 import { useCycleFilter } from './hooks/useCycleFilter';
@@ -173,11 +174,13 @@ function AppContent() {
 
 export function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <AppContent />
-      </ToastProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
