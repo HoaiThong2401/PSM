@@ -74,6 +74,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           onSelectCycle={onSelectCycle}
           onOpenAddModal={onOpenAddModal}
           user={user}
+          onLogout={onLogout}
           settings={settings}
           onToggleTheme={onToggleTheme}
         />
