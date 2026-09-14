@@ -55,11 +55,10 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
             <button
               onClick={() => onViewModeChange('table')}
               title="Xem dạng bảng"
-              className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
-                viewMode === 'table'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
-              }`}
+              className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${viewMode === 'table'
+                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                }`}
             >
               <Table className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Bảng</span>
@@ -67,11 +66,10 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
             <button
               onClick={() => onViewModeChange('timeline')}
               title="Xem dạng thẻ"
-              className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
-                viewMode === 'timeline'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
-              }`}
+              className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${viewMode === 'timeline'
+                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                }`}
             >
               <LayoutList className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Thẻ</span>
@@ -101,11 +99,10 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
               <button
                 key={opt.id}
                 onClick={() => onStatusChange(opt.id)}
-                className={`px-3 py-1 rounded-full font-semibold transition-all whitespace-nowrap ${
-                  isActive
-                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
-                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                }`}
+                className={`px-3 py-1 rounded-full font-semibold transition-all whitespace-nowrap ${isActive
+                  ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
+                  : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  }`}
               >
                 {opt.label}
               </button>
@@ -124,7 +121,7 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
             onChange={(e) => onSortModeChange(e.target.value as IncomeSortMode)}
             className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors shadow-xs cursor-pointer"
           >
-            <option value="processing_first">🎯 Ưu tiên Processing (Mặc định)</option>
+            <option value="processing_first">🎯 Ưu tiên Processing</option>
             <option value="recently_updated">⚡ Vừa cập nhật gần đây</option>
             <option value="date_desc">📅 Mới nhất ➔ Cũ nhất</option>
             <option value="date_asc">📅 Cũ nhất ➔ Mới nhất</option>

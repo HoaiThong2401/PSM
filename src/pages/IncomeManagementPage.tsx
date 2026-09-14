@@ -106,24 +106,20 @@ export const IncomeManagementPage: React.FC<IncomeManagementPageProps> = ({
       />
 
       {viewMode === 'table' ? (
-        <div className="hidden sm:block">
-          <IncomeTableView
-            records={processedRecords}
-            onEdit={onOpenAddModal}
-            onDelete={onDeleteRecord}
-            onInlineUpdate={onInlineUpdate}
-          />
-        </div>
-      ) : null}
-
-      <div className={viewMode === 'table' ? 'sm:hidden' : 'block'}>
+        <IncomeTableView
+          records={processedRecords}
+          onEdit={onOpenAddModal}
+          onDelete={onDeleteRecord}
+          onInlineUpdate={onInlineUpdate}
+        />
+      ) : (
         <IncomeCardTimeline
           records={processedRecords}
           onEdit={onOpenAddModal}
           onDelete={onDeleteRecord}
           onInlineUpdate={onInlineUpdate}
         />
-      </div>
+      )}
     </div>
   );
 };
