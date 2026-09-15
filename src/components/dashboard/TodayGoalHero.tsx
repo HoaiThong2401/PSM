@@ -1,5 +1,4 @@
 import React from 'react';
-import confetti from 'canvas-confetti';
 import { Sparkles, ArrowUpRight } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
@@ -30,19 +29,10 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
   const target = todayRecord?.targetCash || getTargetForDate(todayISO, settings);
   const actualCash = todayRecord ? todayRecord.totalCash : 0;
   const percentage = target > 0 ? Math.min(Math.round((actualCash / target) * 100), 100) : 0;
-  const isGoalReached = actualCash >= target && target > 0;
+  const isGoalReached = (actualCash >= target && target > 0) || todayRecord?.status === 'success';
   const remaining = Math.max(0, target - actualCash);
 
-  const handleCelebrate = () => {
-    confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
-  };
-
   const handleOpenInput = () => {
-    if (isGoalReached) handleCelebrate();
     onQuickUpdateCash(todayRecord);
   };
 

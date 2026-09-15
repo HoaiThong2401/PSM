@@ -14,7 +14,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   weekdayTargetCash: 200000,
   weekendTargetCash: 250000,
   cycleStartDay: 26,
-  defaultBaseSalary: 200000,
+  defaultBaseSalary: 204000,
   currency: 'VND',
   theme: 'dark',
   language: 'vi',

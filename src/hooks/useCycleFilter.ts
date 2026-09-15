@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import type { IncomeRecord, IncomeCycle, CycleSummary } from '../types/income';
 import type { UserSettings } from '../types/settings';
 import { calculateCycleSummary } from '../utils/calculation';
@@ -99,10 +99,11 @@ export function useCycleFilter(records: IncomeRecord[], settings: UserSettings) 
   }, []);
 
   const [selectedCycleId, setSelectedCycleId] = useState<string>(defaultCycleId);
+  const hasInitializedRef = useRef(false);
 
-  // Tự động chuyển tới chu kỳ có dữ liệu nếu chu kỳ hiện tại trống
+  // Chỉ tự động chọn chu kỳ có dữ liệu 1 lần duy nhất khi khởi tạo lần đầu
   useEffect(() => {
-    if (records.length > 0) {
+    if (!hasInitializedRef.current && records.length > 0 && availableCycles.length > 0) {
       const currentHasData = records.some((r) => {
         const c = availableCycles.find((cy) => cy.id === selectedCycleId);
         return c && r.date >= c.startDate && r.date <= c.endDate && (r.cash > 0 || r.baseSalary > 0);
@@ -119,6 +120,7 @@ export function useCycleFilter(records: IncomeRecord[], settings: UserSettings) 
           }
         }
       }
+      hasInitializedRef.current = true;
     }
   }, [records, availableCycles, selectedCycleId]);
 

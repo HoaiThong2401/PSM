@@ -4,7 +4,7 @@ import type { UserSettings } from '../types/settings';
 import { storageService } from '../services/storageService';
 import { supabaseIncomeService } from '../services/supabaseIncomeService';
 import { isSupabaseConfigured } from '../services/supabaseClient';
-import { computeRecordTotals } from '../utils/calculation';
+import { computeRecordTotals, computeDayStatus, getTargetForDate } from '../utils/calculation';
 import { INITIAL_INCOME_RECORDS } from '../constants/mockData';
 
 export function useIncomeData(userId: string | undefined, settings: UserSettings) {
@@ -77,10 +77,15 @@ export function useIncomeData(userId: string | undefined, settings: UserSettings
     }) => {
       if (!userId) return;
 
-      const baseSalary = input.baseSalary ?? settings.defaultBaseSalary;
       const tips = input.tips ?? 0;
       const bonus = input.bonus ?? 0;
       const note = input.note ?? '';
+      const targetCash = input.targetCash || getTargetForDate(input.date, settings);
+      const totalCash = (input.cash ?? 0) + tips;
+      const effectiveStatus = input.isCustomStatus && input.status
+        ? input.status
+        : computeDayStatus(input.date, totalCash, targetCash);
+      const baseSalary = effectiveStatus === 'success' ? (settings.defaultBaseSalary ?? 204000) : 0;
 
       if (isSupabaseLive) {
         try {
@@ -92,7 +97,7 @@ export function useIncomeData(userId: string | undefined, settings: UserSettings
               baseSalary,
               tips,
               bonus,
-              status: input.status,
+              status: effectiveStatus,
               isCustomStatus: input.isCustomStatus,
               note,
             },

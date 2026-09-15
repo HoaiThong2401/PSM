@@ -76,6 +76,7 @@ function AppContent() {
     note?: string;
   }) => {
     upsertRecord(data);
+
     toast({
       type: 'success',
       title: t.common.save,
@@ -88,7 +89,7 @@ function AppContent() {
     deleteRecord(deleteConfirmId);
     setDeleteConfirmId(null);
     toast({
-      type: 'info',
+      type: 'success',
       title: t.common.delete,
       action: {
         label: t.common.cancel,
@@ -119,15 +120,11 @@ function AppContent() {
     >
       {currentTab === 'dashboard' && (
         <DashboardPage
-          records={records}
           cycleRecords={cycleRecords}
           summary={cycleSummary}
           currentCycle={currentCycle}
           settings={settings}
           onOpenAddModal={handleOpenAddModal}
-          onSelectTab={setCurrentTab}
-          onDeleteRecord={(id) => setDeleteConfirmId(id)}
-          onInlineUpdate={updateInlineField}
         />
       )}
 
@@ -141,7 +138,14 @@ function AppContent() {
       )}
 
       {currentTab === 'analytics' && (
-        <AnalyticsPage cycleRecords={cycleRecords} summary={cycleSummary} />
+        <AnalyticsPage
+          allRecords={records}
+          cycles={availableCycles}
+          settings={settings}
+          selectedCycleId={selectedCycleId}
+          onSelectCycle={setSelectedCycleId}
+          onSelectTab={setCurrentTab}
+        />
       )}
 
       {currentTab === 'settings' && (
@@ -159,6 +163,7 @@ function AppContent() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         record={editingRecord}
+        records={records}
         settings={settings}
         onSave={handleSaveIncome}
       />

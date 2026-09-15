@@ -60,18 +60,20 @@ export function computeRecordTotals(
   const targetCash = record.targetCash || getTargetForDate(record.date, settings);
   const cash = Number(record.cash) || 0;
   const tips = Number(record.tips) || 0;
-  const baseSalary = Number(record.baseSalary) || 0;
   const bonus = Number(record.bonus) || 0;
   
   // Tổng tiền mặt = Tiền mặt + Bo
   const totalCash = cash + tips;
-  // Tổng thu nhập = Tổng tiền mặt + Lương cơ bản + Thưởng
-  const totalIncome = totalCash + baseSalary + bonus;
 
   // If user explicitly provided a custom status, honor it, otherwise compute automatically
   const status = record.isCustomStatus && record.status
     ? record.status
     : computeDayStatus(record.date, totalCash, targetCash);
+
+  // Lương cơ bản: Khi trạng thái đạt 'success' thì tự động áp dụng lương cơ bản mặc định mỗi ngày, ngược lại là 0
+  const baseSalary = status === 'success' ? (settings.defaultBaseSalary ?? 204000) : 0;
+  // Tổng thu nhập = Tổng tiền mặt + Lương cơ bản + Thưởng
+  const totalIncome = totalCash + baseSalary + bonus;
 
   return {
     ...record,
