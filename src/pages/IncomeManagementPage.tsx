@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
+import { CalendarDays } from 'lucide-react';
 import type { IncomeRecord, DayStatus, IncomeSortMode } from '../types/income';
 import { IncomeFilterBar } from '../components/income/IncomeFilterBar';
 import { IncomeTableView } from '../components/income/IncomeTableView';
 import { IncomeCardTimeline } from '../components/income/IncomeCardTimeline';
-import { exportToCSV } from '../utils/exportUtils';
+import { exportToExcel } from '../utils/exportUtils';
 import { formatDisplayDate } from '../utils/dateUtils';
 
 import { useLanguage } from '../contexts/LanguageContext';
@@ -81,16 +82,17 @@ export const IncomeManagementPage: React.FC<IncomeManagementPageProps> = ({
   }, [cycleRecords, selectedStatus, searchQuery, sortMode]);
 
   const handleExportCSV = () => {
-    exportToCSV(processedRecords, `thu-nhap-ky-${new Date().toISOString().slice(0, 7)}.csv`);
+    exportToExcel(processedRecords, `thu-nhap-ky-${new Date().toISOString().slice(0, 7)}.xlsx`);
   };
 
   return (
     <div className="space-y-6 animate-fade-in pb-12">
-      <div className="space-y-2">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
-          {t.income.pageTitle}
+      <div>
+        <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+          <CalendarDays className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400 shrink-0" />
+          <span>{t.income.pageTitle}</span>
         </h2>
-        <p className="text-xs text-slate-500 dark:text-zinc-400">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 mt-0.5">
           {t.income.pageSubtitle}
         </p>
       </div>

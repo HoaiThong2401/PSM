@@ -13,7 +13,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { FlagIcon } from '../ui/FlagIcon';
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   cycles: IncomeCycle[];
   selectedCycleId: string;
@@ -35,8 +35,6 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  title,
-  subtitle,
   cycles,
   selectedCycleId,
   onSelectCycle,
@@ -75,19 +73,8 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl sticky top-0 z-30 border-b border-slate-200/80 dark:border-slate-800/80">
       {/* Top Main Navigation Bar */}
-      <div className="px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 flex items-center justify-between md:justify-end gap-2 sm:gap-4">
         {/* Desktop Page Title & Subtitle */}
-        <div className="hidden md:block min-w-0 flex-1">
-          <h1 className="text-lg md:text-xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-            {title}
-          </h1>
-          {subtitle && (
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
-              {subtitle}
-            </p>
-          )}
-        </div>
-
         {/* Mobile Brand Name & Slogan (Replaces sidebar on small screens) */}
         <div className="flex md:hidden items-center gap-2.5 min-w-0 flex-1">
           <AppLogo size="sm" />
@@ -107,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Controls & User Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 md:ml-auto">
           {/* Cycle Selector on Desktop */}
           <div className="hidden md:block">
             <CycleSelector

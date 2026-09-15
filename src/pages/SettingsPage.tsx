@@ -4,14 +4,13 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { formatNumber, parseVNDInput } from '../utils/currency';
-import { exportToJSON } from '../utils/exportUtils';
+import { exportSettingsToExcel } from '../utils/exportUtils';
 import { useToast } from '../components/ui/Toast';
 import { PwaInstallCard } from '../components/settings/PwaInstallCard';
-import { Sliders, Moon, Sun, Download, RotateCcw } from 'lucide-react';
+import { Sliders, Moon, Sun, Download, RotateCcw, Globe, Settings2 } from 'lucide-react';
 
 import { useLanguage } from '../contexts/LanguageContext';
 import { FlagIcon } from '../components/ui/FlagIcon';
-import { Globe } from 'lucide-react';
 
 interface SettingsPageProps {
   settings: UserSettings;
@@ -55,17 +54,18 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   };
 
   const handleExportBackup = () => {
-    exportToJSON({ settings, exportedAt: new Date().toISOString() }, 'cai-dat-tai-chinh.json');
-    toast({ type: 'success', title: language === 'vi' ? 'Đã tải xuống bản sao lưu' : 'Backup downloaded' });
+    exportSettingsToExcel(settings, 'cai-dat-tai-chinh.xlsx');
+    toast({ type: 'success', title: language === 'vi' ? 'Đã tải xuống bản sao lưu Excel' : 'Excel backup downloaded' });
   };
 
   return (
     <div className="space-y-6 max-w-4xl animate-fade-in pb-12">
       <div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
-          {t.settings.pageTitle}
+        <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+          <Settings2 className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400 shrink-0" />
+          <span>{t.settings.pageTitle}</span>
         </h2>
-        <p className="text-xs text-slate-500 dark:text-zinc-400">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 mt-0.5">
           {t.settings.pageSubtitle}
         </p>
       </div>
