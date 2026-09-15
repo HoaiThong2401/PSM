@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TrendingUp, CheckCircle2, ShieldCheck, Sparkles, BarChart2, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, Sparkles, BarChart2, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { AppLogo } from '../components/ui/AppLogo';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../components/ui/Toast';
 
@@ -82,9 +83,7 @@ export const LoginPage: React.FC = () => {
         <div className="p-6 sm:p-10 lg:p-12 bg-gradient-to-br from-indigo-950 via-indigo-900 to-slate-950 text-white flex flex-col justify-between relative overflow-hidden border-b md:border-b-0 md:border-r border-indigo-800/40">
           <div className="relative z-10 space-y-5 sm:space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-lg">
-                <TrendingUp className="w-5 h-5 stroke-[2.5]" />
-              </div>
+              <AppLogo size="md" />
               <div className="flex items-center gap-1.5">
                 <span className="font-black text-xl tracking-tight">DailyIncome</span>
                 <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
@@ -120,15 +119,11 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-6 sm:pt-8 text-[11px] text-indigo-300/70 flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>{isVi ? 'Bảo mật PostgreSQL Row Level Security (RLS)' : 'Secured with PostgreSQL Row Level Security (RLS)'}</span>
-          </div>
         </div>
 
         {/* Right Auth Form */}
-        <div className="p-6 sm:p-10 flex flex-col justify-center space-y-4 sm:space-y-5 dark:bg-slate-900/90">
-          <div className="flex items-center justify-between">
+        <div className="p-6 sm:p-10 flex flex-col justify-center dark:bg-slate-900/90">
+          <div className="flex items-center justify-between mb-5">
             <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100">
               {authMode === 'login' ? (isVi ? 'Đăng nhập tài khoản' : 'Sign In') : (isVi ? 'Tạo tài khoản mới' : 'Create Account')}
             </h3>
@@ -136,22 +131,20 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setAuthMode('login')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  authMode === 'login'
-                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'
-                }`}
+                className={`px-3 py-1 rounded-lg transition-all ${authMode === 'login'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'
+                  }`}
               >
                 {isVi ? 'Đăng nhập' : 'Sign In'}
               </button>
               <button
                 type="button"
                 onClick={() => setAuthMode('register')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  authMode === 'register'
-                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'
-                }`}
+                className={`px-3 py-1 rounded-lg transition-all ${authMode === 'register'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'
+                  }`}
               >
                 {isVi ? 'Đăng ký' : 'Sign Up'}
               </button>
@@ -196,26 +189,26 @@ export const LoginPage: React.FC = () => {
               variant="primary"
               size="md"
               isLoading={isSubmitting || isLoading}
-              className="w-full justify-center font-bold text-sm shadow-md shadow-indigo-500/20 mt-1"
+              className="w-full justify-center font-bold text-sm shadow-md shadow-indigo-500/20"
             >
               <span>{authMode === 'login' ? (isVi ? 'Đăng nhập' : 'Sign In') : (isVi ? 'Tạo tài khoản' : 'Create Account')}</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </form>
 
-          {/* Centered Divider */}
-          <div className="relative flex items-center justify-center my-1">
+          {/* Centered Divider with perfectly balanced vertical margin */}
+          <div className="relative flex items-center justify-center my-4 sm:my-5">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200 dark:border-slate-800" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-white dark:bg-slate-900 px-3 text-[11px] text-slate-400 dark:text-slate-500 uppercase font-semibold">
+              <span className="bg-white dark:bg-slate-900 px-3 text-[11px] text-slate-400 dark:text-slate-500 uppercase font-semibold tracking-wider">
                 {isVi ? 'Hoặc' : 'Or'}
               </span>
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <button
               type="button"
               onClick={handleGoogleClick}

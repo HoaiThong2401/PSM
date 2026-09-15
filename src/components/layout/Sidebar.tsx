@@ -6,9 +6,9 @@ import {
   Settings,
   LogOut,
   Sparkles,
-  TrendingUp,
 } from 'lucide-react';
 import type { UserProfile } from '../../types/auth';
+import { AppLogo } from '../ui/AppLogo';
 
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -56,9 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <aside className="hidden md:flex flex-col w-64 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-r border-slate-200/80 dark:border-slate-800/80 p-4 shrink-0 h-screen sticky top-0 justify-between select-none">
       <div className="space-y-6">
         <div className="flex items-center gap-3 px-2 py-1">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
-            <TrendingUp className="w-5 h-5 stroke-[2.5]" />
-          </div>
+          <AppLogo size="md" />
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-slate-100">

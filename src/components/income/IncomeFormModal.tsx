@@ -57,7 +57,7 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
     } else {
       setDate(getTodayISO());
       setCashStr('');
-      setBaseSalaryStr(formatNumber(settings.defaultBaseSalary));
+      setBaseSalaryStr('');
       setTipsStr('');
       setBonusStr('');
       setSelectedStatus('auto');
@@ -75,8 +75,8 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
   const tips = parseVNDInput(tipsStr);
   const bonus = parseVNDInput(bonusStr);
 
-  const totalCash = cash;
-  const totalIncome = cash + baseSalary + tips + bonus;
+  const totalCash = cash + tips;
+  const totalIncome = totalCash + baseSalary + bonus;
   const target = getTargetForDate(date, settings);
   const autoStatus = computeDayStatus(date, totalCash, target);
   const effectiveStatus = selectedStatus === 'auto' ? autoStatus : selectedStatus;

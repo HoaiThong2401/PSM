@@ -58,12 +58,15 @@ export function computeRecordTotals(
   settings: UserSettings
 ): IncomeRecord {
   const targetCash = record.targetCash || getTargetForDate(record.date, settings);
-  const totalCash = Number(record.cash) || 0;
-  const totalIncome =
-    totalCash +
-    (Number(record.baseSalary) || 0) +
-    (Number(record.tips) || 0) +
-    (Number(record.bonus) || 0);
+  const cash = Number(record.cash) || 0;
+  const tips = Number(record.tips) || 0;
+  const baseSalary = Number(record.baseSalary) || 0;
+  const bonus = Number(record.bonus) || 0;
+  
+  // Tổng tiền mặt = Tiền mặt + Bo
+  const totalCash = cash + tips;
+  // Tổng thu nhập = Tổng tiền mặt + Lương cơ bản + Thưởng
+  const totalIncome = totalCash + baseSalary + bonus;
 
   // If user explicitly provided a custom status, honor it, otherwise compute automatically
   const status = record.isCustomStatus && record.status
@@ -72,10 +75,10 @@ export function computeRecordTotals(
 
   return {
     ...record,
-    cash: totalCash,
-    baseSalary: Number(record.baseSalary) || 0,
-    tips: Number(record.tips) || 0,
-    bonus: Number(record.bonus) || 0,
+    cash,
+    baseSalary,
+    tips,
+    bonus,
     targetCash,
     totalCash,
     totalIncome,
@@ -103,7 +106,7 @@ export function calculateCycleSummary(records: IncomeRecord[]): CycleSummary {
 
   records.forEach((r) => {
     totalIncome += r.totalIncome;
-    totalCash += r.cash;
+    totalCash += r.totalCash;
     totalBaseSalary += r.baseSalary;
     totalTips += r.tips;
     totalBonus += r.bonus;

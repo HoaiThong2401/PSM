@@ -8,8 +8,8 @@ export interface IncomeRecord {
   baseSalary: number; // Lương cơ bản
   tips: number; // Tiền bo
   bonus: number; // Tiền thưởng
-  totalCash: number; // = cash
-  totalIncome: number; // = cash + baseSalary + tips + bonus
+  totalCash: number; // = cash + tips (Tổng tiền mặt thực tế)
+  totalIncome: number; // = cash + baseSalary + tips + bonus = totalCash + baseSalary + bonus
   targetCash: number; // Mục tiêu tiền mặt của ngày (tính tự động hoặc ghi đè)
   status: DayStatus;
   isCustomStatus?: boolean; // Nếu user chủ động đổi trạng thái thủ công

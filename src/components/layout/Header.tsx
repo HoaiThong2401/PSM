@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, Moon, Sun, LogOut, TrendingUp } from 'lucide-react';
+import { Bell, Moon, Sun, LogOut } from 'lucide-react';
 import { CycleSelector } from './CycleSelector';
+import { AppLogo } from '../ui/AppLogo';
 import type { IncomeCycle } from '../../types/income';
 import type { UserProfile } from '../../types/auth';
 import type { UserSettings } from '../../types/settings';
@@ -68,9 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Brand Name & Slogan (Replaces sidebar on small screens) */}
         <div className="flex md:hidden items-center gap-2.5 min-w-0 flex-1">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-sky-400 flex items-center justify-center text-white shadow-xs shrink-0">
-            <TrendingUp className="w-4 h-4 stroke-[2.5]" />
-          </div>
+          <AppLogo size="sm" />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-slate-100 truncate">

@@ -28,7 +28,7 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
   const formattedToday = formatDisplayDate(todayISO);
 
   const target = todayRecord?.targetCash || getTargetForDate(todayISO, settings);
-  const actualCash = todayRecord?.cash || 0;
+  const actualCash = todayRecord ? todayRecord.totalCash : 0;
   const percentage = target > 0 ? Math.min(Math.round((actualCash / target) * 100), 100) : 0;
   const isGoalReached = actualCash >= target && target > 0;
   const remaining = Math.max(0, target - actualCash);
