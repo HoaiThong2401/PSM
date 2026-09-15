@@ -6,6 +6,7 @@ import { MobileNavigation } from './MobileNavigation';
 import type { IncomeCycle } from '../../types/income';
 import type { UserProfile } from '../../types/auth';
 import type { UserSettings } from '../../types/settings';
+import type { AppNotification } from '../../types/notification';
 
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -20,6 +21,14 @@ interface MainLayoutProps {
   onLogout: () => void;
   settings: UserSettings;
   onToggleTheme: () => void;
+  notifications: AppNotification[];
+  unreadCount: number;
+  permission: NotificationPermission;
+  onRequestPushPermission: () => Promise<NotificationPermission>;
+  onMarkAsRead: (id: string) => void;
+  onMarkAllAsRead: () => void;
+  onRemoveNotification: (id: string) => void;
+  onClearAllNotifications: () => void;
   children: React.ReactNode;
 }
 
@@ -34,6 +43,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   onLogout,
   settings,
   onToggleTheme,
+  notifications,
+  unreadCount,
+  permission,
+  onRequestPushPermission,
+  onMarkAsRead,
+  onMarkAllAsRead,
+  onRemoveNotification,
+  onClearAllNotifications,
   children,
 }) => {
   const { t, language } = useLanguage();
@@ -81,6 +98,15 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           onLogout={onLogout}
           settings={settings}
           onToggleTheme={onToggleTheme}
+          notifications={notifications}
+          unreadCount={unreadCount}
+          permission={permission}
+          onRequestPushPermission={onRequestPushPermission}
+          onMarkAsRead={onMarkAsRead}
+          onMarkAllAsRead={onMarkAllAsRead}
+          onRemoveNotification={onRemoveNotification}
+          onClearAllNotifications={onClearAllNotifications}
+          onSelectTab={onSelectTab}
         />
 
         <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">
@@ -92,3 +118,4 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     </div>
   );
 };
+

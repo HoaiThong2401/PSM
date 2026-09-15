@@ -383,16 +383,34 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({
                 }}
               />
               <Legend
-                wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }}
-                formatter={(val) => {
-                  const map: Record<string, string> = {
-                    cash: t.income.colCash,
-                    baseSalary: t.income.colBaseSalary,
-                    tipsBonus: t.analytics.colTipsBonus,
-                    totalIncome: t.income.colTotalIncome,
-                  };
-                  return map[val] || val;
-                }}
+                content={() => (
+                  <div className="pt-2.5">
+                    <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-1.5 sm:gap-5 text-[11px] sm:text-xs">
+                      {[
+                        { key: 'cash', label: t.income.colCash, color: '#0ea5e9', isLine: false },
+                        { key: 'baseSalary', label: t.income.colBaseSalary, color: '#6366f1', isLine: false },
+                        { key: 'tipsBonus', label: t.analytics.colTipsBonus, color: '#10b981', isLine: false },
+                        { key: 'totalIncome', label: t.income.colTotalIncome, color: '#f59e0b', isLine: true },
+                      ].map((item) => (
+                        <div
+                          key={item.key}
+                          className="flex items-center justify-center sm:justify-start gap-1.5 py-1 px-2 rounded-lg bg-slate-100/70 dark:bg-slate-800/70 sm:bg-transparent dark:sm:bg-transparent text-slate-700 dark:text-slate-300 font-semibold"
+                        >
+                          {item.isLine ? (
+                            <div className="flex items-center gap-0.5 shrink-0">
+                              <span className="w-2 h-0.5 rounded-full" style={{ backgroundColor: item.color }} />
+                              <span className="w-1.5 h-1.5 rounded-full border border-white dark:border-slate-900" style={{ backgroundColor: item.color }} />
+                              <span className="w-2 h-0.5 rounded-full" style={{ backgroundColor: item.color }} />
+                            </div>
+                          ) : (
+                            <span className="w-2.5 h-2.5 rounded-xs shrink-0" style={{ backgroundColor: item.color }} />
+                          )}
+                          <span className="truncate">{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               />
               <Bar dataKey="cash" stackId="a" fill="#0ea5e9" radius={[0, 0, 0, 0]} maxBarSize={40} />
               <Bar dataKey="baseSalary" stackId="a" fill="#6366f1" radius={[0, 0, 0, 0]} maxBarSize={40} />

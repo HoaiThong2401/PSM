@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, Moon, Sun, LogOut } from 'lucide-react';
+import { Moon, Sun, LogOut } from 'lucide-react';
 import { CycleSelector } from './CycleSelector';
 import { AppLogo } from '../ui/AppLogo';
+import { NotificationDropdown } from './NotificationDropdown';
 import type { IncomeCycle } from '../../types/income';
 import type { UserProfile } from '../../types/auth';
 import type { UserSettings } from '../../types/settings';
+import type { AppNotification } from '../../types/notification';
+import type { NavTab } from './Sidebar';
 
 import { useLanguage } from '../../contexts/LanguageContext';
 import { FlagIcon } from '../ui/FlagIcon';
@@ -20,6 +23,15 @@ interface HeaderProps {
   onLogout?: () => void;
   settings: UserSettings;
   onToggleTheme: () => void;
+  notifications: AppNotification[];
+  unreadCount: number;
+  permission: NotificationPermission;
+  onRequestPushPermission: () => Promise<NotificationPermission>;
+  onMarkAsRead: (id: string) => void;
+  onMarkAllAsRead: () => void;
+  onRemoveNotification: (id: string) => void;
+  onClearAllNotifications: () => void;
+  onSelectTab?: (tab: NavTab) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -32,6 +44,15 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
   settings,
   onToggleTheme,
+  notifications,
+  unreadCount,
+  permission,
+  onRequestPushPermission,
+  onMarkAsRead,
+  onMarkAllAsRead,
+  onRemoveNotification,
+  onClearAllNotifications,
+  onSelectTab,
 }) => {
   const { language, toggleLanguage, t } = useLanguage();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -116,15 +137,18 @@ export const Header: React.FC<HeaderProps> = ({
             {settings.theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
           </button>
 
-          {/* Desktop Notifications */}
-          <button
-            title={t.header.notifications}
-            className="hidden sm:inline-flex relative p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shrink-0"
-          >
-            <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-500 animate-ping" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-600" />
-          </button>
+          {/* Interactive Notifications (Desktop & Mobile) */}
+          <NotificationDropdown
+            notifications={notifications}
+            unreadCount={unreadCount}
+            permission={permission}
+            onRequestPushPermission={onRequestPushPermission}
+            onMarkAsRead={onMarkAsRead}
+            onMarkAllAsRead={onMarkAllAsRead}
+            onRemoveNotification={onRemoveNotification}
+            onClearAll={onClearAllNotifications}
+            onSelectTab={onSelectTab}
+          />
 
           {/* Mobile User Avatar & Logout Popover */}
           <div className="relative flex md:hidden items-center shrink-0 ml-0.5" ref={menuRef}>

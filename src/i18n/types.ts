@@ -215,4 +215,30 @@ export interface TranslationDictionary {
     saturday: string;
     sunday: string;
   };
+  notifications: {
+    title: string;
+    empty: string;
+    emptyDesc: string;
+    markAllRead: string;
+    clearAll: string;
+    unreadCount: string;
+    enablePush: string;
+    pushEnabled: string;
+    morningShiftTitle: string;
+    morningShiftMsg: string;
+    missingEntryTitle: string;
+    missingEntryMsg: string;
+    cycleEndingMorningTitle: string;
+    cycleEndingMorningMsg: string;
+    cycleEndingNightTitle: string;
+    cycleEndingNightMsg: string;
+    goalAchievedTitle: string;
+    goalAchievedMsg: string;
+    dailyGoalAchievedTitle: string;
+    dailyGoalAchievedMsg: string;
+    justNow: string;
+    minutesAgo: string;
+    hoursAgo: string;
+    daysAgo: string;
+  };
 }

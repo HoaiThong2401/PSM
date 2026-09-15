@@ -5,6 +5,7 @@ import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { useSettings } from './hooks/useSettings';
 import { useIncomeData } from './hooks/useIncomeData';
 import { useCycleFilter } from './hooks/useCycleFilter';
+import { useNotifications } from './hooks/useNotifications';
 import { MainLayout } from './components/layout/MainLayout';
 import type { NavTab } from './components/layout/Sidebar';
 import { DashboardPage } from './pages/DashboardPage';
@@ -15,7 +16,7 @@ import { LoginPage } from './pages/LoginPage';
 import { IncomeFormModal } from './components/income/IncomeFormModal';
 import { ConfirmDialog } from './components/ui/ConfirmDialog';
 import type { IncomeRecord, DayStatus } from './types/income';
-
+import { getTargetForDate, computeDayStatus } from './utils/calculation';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 
 function AppContent() {
@@ -48,6 +49,23 @@ function AppContent() {
     cycleSummary,
   } = useCycleFilter(records, settings);
 
+  const {
+    notifications,
+    unreadCount,
+    permission,
+    requestPushPermission,
+    markAsRead,
+    markAllAsRead,
+    removeNotification,
+    clearAllNotifications,
+    notifyDailySuccess,
+  } = useNotifications({
+    userId: user?.id,
+    records,
+    currentCycle,
+    cycleSummary,
+  });
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">
@@ -76,6 +94,12 @@ function AppContent() {
     note?: string;
   }) => {
     upsertRecord(data);
+
+    const targetCash = getTargetForDate(data.date, settings);
+    const computedStatus = data.status || computeDayStatus(data.date, data.cash + data.tips, targetCash);
+    if (computedStatus === 'success') {
+      notifyDailySuccess(data.date);
+    }
 
     toast({
       type: 'success',
@@ -117,6 +141,14 @@ function AppContent() {
       onLogout={logout}
       settings={settings}
       onToggleTheme={handleToggleTheme}
+      notifications={notifications}
+      unreadCount={unreadCount}
+      permission={permission}
+      onRequestPushPermission={requestPushPermission}
+      onMarkAsRead={markAsRead}
+      onMarkAllAsRead={markAllAsRead}
+      onRemoveNotification={removeNotification}
+      onClearAllNotifications={clearAllNotifications}
     >
       {currentTab === 'dashboard' && (
         <DashboardPage
