@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, ShieldCheck, Sparkles, BarChart2, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Sparkles, BarChart2, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { AppLogo } from '../components/ui/AppLogo';
