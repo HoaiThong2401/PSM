@@ -89,7 +89,7 @@ export const vi: TranslationDictionary = {
     filterSuccess: 'Đạt mục tiêu',
     filterFailed: 'Chưa đạt',
     filterNotStarted: 'Chưa làm',
-    sortProcessingFirst: '🎯 Ưu tiên Processing',
+    sortProcessingFirst: '🎯 Mặc định',
     sortRecentlyUpdated: '⚡ Vừa cập nhật gần đây',
     sortDateDesc: '📅 Mới nhất ➔ Cũ nhất',
     sortDateAsc: '📅 Cũ nhất ➔ Mới nhất',
