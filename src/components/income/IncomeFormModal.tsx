@@ -92,10 +92,10 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
 
   const totalCash = finalCash + finalTips;
   const target = getTargetForDate(date, settings);
-  const autoStatus = computeDayStatus(date, totalCash, target);
+  const autoStatus = computeDayStatus(date, finalCash, target);
   const effectiveStatus = selectedStatus === 'auto' ? autoStatus : selectedStatus;
   const baseSalary = effectiveStatus === 'success' ? (settings.defaultBaseSalary ?? 204000) : 0;
-  const totalIncome = totalCash + baseSalary + finalBonus;
+  const totalIncome = finalCash + finalTips + baseSalary + finalBonus;
   const dayLabel = getDayOfWeekLabel(date, language);
 
   const handleSubmit = (e: React.FormEvent) => {

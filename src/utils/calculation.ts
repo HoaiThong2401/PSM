@@ -65,15 +65,15 @@ export function computeRecordTotals(
   // Tổng tiền mặt = Tiền mặt + Bo
   const totalCash = cash + tips;
 
-  // If user explicitly provided a custom status, honor it, otherwise compute automatically
+  // If user explicitly provided a custom status, honor it, otherwise compute automatically based on cash
   const status = record.isCustomStatus && record.status
     ? record.status
-    : computeDayStatus(record.date, totalCash, targetCash);
+    : computeDayStatus(record.date, cash, targetCash);
 
   // Lương cơ bản: Khi trạng thái đạt 'success' thì tự động áp dụng lương cơ bản mặc định mỗi ngày, ngược lại là 0
   const baseSalary = status === 'success' ? (settings.defaultBaseSalary ?? 204000) : 0;
-  // Tổng thu nhập = Tổng tiền mặt + Lương cơ bản + Thưởng
-  const totalIncome = totalCash + baseSalary + bonus;
+  // Tổng thu nhập = Tiền mặt + Bo + Lương cơ bản + Thưởng
+  const totalIncome = cash + tips + baseSalary + bonus;
 
   return {
     ...record,
@@ -108,7 +108,7 @@ export function calculateCycleSummary(records: IncomeRecord[]): CycleSummary {
 
   records.forEach((r) => {
     totalIncome += r.totalIncome;
-    totalCash += r.totalCash;
+    totalCash += r.cash;
     totalBaseSalary += r.baseSalary;
     totalTips += r.tips;
     totalBonus += r.bonus;

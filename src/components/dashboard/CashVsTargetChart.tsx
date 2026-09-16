@@ -22,7 +22,7 @@ interface CashVsTargetChartProps {
 export const CashVsTargetChart: React.FC<CashVsTargetChartProps> = ({ records }) => {
   const chartData = records.map((r) => ({
     date: formatShortDate(r.date),
-    cash: r.totalCash,
+    cash: r.cash,
     targetCash: r.targetCash,
   }));
 

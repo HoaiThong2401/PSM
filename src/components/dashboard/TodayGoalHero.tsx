@@ -27,7 +27,9 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
   const formattedToday = formatDisplayDate(todayISO);
 
   const target = todayRecord?.targetCash || getTargetForDate(todayISO, settings);
-  const actualCash = todayRecord ? todayRecord.totalCash : 0;
+  const actualCash = todayRecord ? todayRecord.cash : 0;
+  const todayTips = todayRecord ? todayRecord.tips : 0;
+  const todayTotalIncome = todayRecord ? todayRecord.totalIncome : (actualCash + todayTips);
   const percentage = target > 0 ? Math.min(Math.round((actualCash / target) * 100), 100) : 0;
   const isGoalReached = (actualCash >= target && target > 0) || todayRecord?.status === 'success';
   const remaining = Math.max(0, target - actualCash);
@@ -75,23 +77,29 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-1">
-            <div className="bg-white/90 dark:bg-white/5 border border-indigo-100/80 dark:border-white/10 rounded-2xl p-3.5 backdrop-blur-sm shadow-xs">
-              <span className="text-[11px] font-medium text-slate-500 dark:text-indigo-200/70 block">{t.dashboard.todayTarget}</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+            <div className="bg-white/90 dark:bg-white/5 border border-indigo-100/80 dark:border-white/10 rounded-2xl p-3 backdrop-blur-sm shadow-xs">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-indigo-200/70 block truncate">{t.dashboard.todayTarget}</span>
               <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                 {formatVND(target)}
               </span>
             </div>
-            <div className="bg-white/90 dark:bg-white/5 border border-indigo-100/80 dark:border-white/10 rounded-2xl p-3.5 backdrop-blur-sm shadow-xs">
-              <span className="text-[11px] font-medium text-slate-500 dark:text-indigo-200/70 block">{t.dashboard.actualCash}</span>
+            <div className="bg-white/90 dark:bg-white/5 border border-indigo-100/80 dark:border-white/10 rounded-2xl p-3 backdrop-blur-sm shadow-xs">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-indigo-200/70 block truncate">{t.dashboard.actualCash}</span>
               <span className="text-base sm:text-lg font-bold text-indigo-600 dark:text-indigo-300 tabular-nums">
                 {formatVND(actualCash)}
               </span>
             </div>
-            <div className="bg-white/90 dark:bg-white/5 border border-indigo-100/80 dark:border-white/10 rounded-2xl p-3.5 backdrop-blur-sm shadow-xs col-span-2 sm:col-span-1">
-              <span className="text-[11px] font-medium text-slate-500 dark:text-indigo-200/70 block">{t.dashboard.totalTodayIncome}</span>
+            <div className="bg-white/90 dark:bg-white/5 border border-indigo-100/80 dark:border-white/10 rounded-2xl p-3 backdrop-blur-sm shadow-xs">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-indigo-200/70 block truncate">{t.dashboard.todayTips}</span>
+              <span className="text-base sm:text-lg font-bold text-amber-600 dark:text-amber-300 tabular-nums">
+                {formatVND(todayTips)}
+              </span>
+            </div>
+            <div className="bg-white/90 dark:bg-white/5 border border-indigo-100/80 dark:border-white/10 rounded-2xl p-3 backdrop-blur-sm shadow-xs">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-indigo-200/70 block truncate">{t.dashboard.totalTodayIncome}</span>
               <span className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-300 tabular-nums">
-                {formatVND(todayRecord?.totalIncome || actualCash)}
+                {formatVND(todayTotalIncome)}
               </span>
             </div>
           </div>

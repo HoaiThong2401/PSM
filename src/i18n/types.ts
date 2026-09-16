@@ -54,6 +54,7 @@ export interface TranslationDictionary {
     goalStartDesc: string;
     todayTarget: string;
     actualCash: string;
+    todayTips: string;
     totalTodayIncome: string;
     goalAchievedPill: string;
     completed: string;
