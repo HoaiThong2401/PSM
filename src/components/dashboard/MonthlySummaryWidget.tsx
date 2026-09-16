@@ -15,7 +15,7 @@ export const MonthlySummaryWidget: React.FC<MonthlySummaryWidgetProps> = ({
   summary,
   currentCycle,
 }) => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
 
   const cycleTitle = currentCycle
     ? language === 'vi'
@@ -96,37 +96,37 @@ export const MonthlySummaryWidget: React.FC<MonthlySummaryWidgetProps> = ({
           <div className="p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-800/40 bg-emerald-50/40 dark:bg-emerald-950/40 flex flex-col items-center text-center shadow-xs">
             <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Success</span>
+              <span>{t.common.success}</span>
             </div>
             <span className="text-lg font-black text-emerald-700 dark:text-emerald-300 mt-0.5 tabular-nums">
               {summary.successDays}
             </span>
           </div>
 
-          <div className="p-2.5 rounded-xl border border-rose-100 dark:border-rose-800/40 bg-rose-50/40 dark:bg-rose-950/40 flex flex-col items-center text-center shadow-xs">
-            <div className="flex items-center gap-1 text-rose-600 dark:text-rose-400 text-xs font-semibold">
-              <XCircle className="w-3.5 h-3.5" />
-              <span>Failed</span>
-            </div>
-            <span className="text-lg font-black text-rose-700 dark:text-rose-300 mt-0.5 tabular-nums">
-              {summary.failedDays}
-            </span>
-          </div>
-
           <div className="p-2.5 rounded-xl border border-sky-100 dark:border-sky-800/40 bg-sky-50/40 dark:bg-sky-950/40 flex flex-col items-center text-center shadow-xs">
             <div className="flex items-center gap-1 text-sky-600 dark:text-sky-400 text-xs font-semibold">
               <Clock className="w-3.5 h-3.5" />
-              <span>Processing</span>
+              <span>{t.common.processing}</span>
             </div>
             <span className="text-lg font-black text-sky-700 dark:text-sky-300 mt-0.5 tabular-nums">
               {summary.processingDays}
             </span>
           </div>
 
+          <div className="p-2.5 rounded-xl border border-rose-100 dark:border-rose-800/40 bg-rose-50/40 dark:bg-rose-950/40 flex flex-col items-center text-center shadow-xs">
+            <div className="flex items-center gap-1 text-rose-600 dark:text-rose-400 text-xs font-semibold">
+              <XCircle className="w-3.5 h-3.5" />
+              <span>{t.common.failed}</span>
+            </div>
+            <span className="text-lg font-black text-rose-700 dark:text-rose-300 mt-0.5 tabular-nums">
+              {summary.failedDays}
+            </span>
+          </div>
+
           <div className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex flex-col items-center text-center shadow-xs">
             <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs font-semibold">
               <Zap className="w-3.5 h-3.5" />
-              <span>Not Started</span>
+              <span>{t.common.notStarted}</span>
             </div>
             <span className="text-lg font-black text-slate-700 dark:text-slate-200 mt-0.5 tabular-nums">
               {summary.notStartedDays}

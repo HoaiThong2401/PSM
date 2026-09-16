@@ -47,8 +47,8 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
     {
       id: 'processing',
       label: t.income.filterProcessing,
-      dotColor: 'bg-amber-500',
-      activeClass: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40 ring-1 ring-amber-500/30 font-bold',
+      dotColor: 'bg-sky-500',
+      activeClass: 'bg-sky-500/15 text-sky-600 dark:text-sky-400 border-sky-500/40 ring-1 ring-sky-500/30 font-bold',
     },
     {
       id: 'success',
@@ -88,21 +88,8 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
 
         {/* Right Controls: Segmented View Switcher & Action Buttons */}
         <div className="flex items-center justify-between sm:justify-end gap-2 flex-wrap">
-          {/* Segmented Control (Table vs Cards) */}
+          {/* Segmented Control (Cards vs Table) */}
           <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
-            <button
-              type="button"
-              onClick={() => onViewModeChange('table')}
-              title={t.income.tableView}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-200 ${
-                viewMode === 'table'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
-              }`}
-            >
-              <Table className="w-3.5 h-3.5" />
-              <span>{t.income.tableView}</span>
-            </button>
             <button
               type="button"
               onClick={() => onViewModeChange('timeline')}
@@ -115,6 +102,19 @@ export const IncomeFilterBar: React.FC<IncomeFilterBarProps> = ({
             >
               <LayoutList className="w-3.5 h-3.5" />
               <span>{t.income.cardView}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onViewModeChange('table')}
+              title={t.income.tableView}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-200 ${
+                viewMode === 'table'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+              }`}
+            >
+              <Table className="w-3.5 h-3.5" />
+              <span>{t.income.tableView}</span>
             </button>
           </div>
 

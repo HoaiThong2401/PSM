@@ -3,7 +3,7 @@ import type { IncomeRecord, DayStatus } from '../../types/income';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { formatVND, formatCompactVND } from '../../utils/currency';
-import { formatDisplayDate, getDayOfWeekLabel } from '../../utils/dateUtils';
+import { formatShortDate, getDayOfWeekLabel } from '../../utils/dateUtils';
 import { getNextStatus } from '../../utils/calculation';
 import { Edit2, Trash2 } from 'lucide-react';
 
@@ -46,16 +46,17 @@ export const IncomeDayCard: React.FC<IncomeDayCardProps> = ({
     >
       <div className="space-y-2.5 sm:space-y-3">
         {/* Header: Date + Status Badge */}
-        <div className="flex items-center justify-between gap-1.5 sm:gap-2 pb-2 sm:pb-3 border-b border-slate-100 dark:border-slate-800/80">
-          <div className="flex items-center gap-1 sm:gap-1.5 min-w-0">
-            <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors whitespace-nowrap">
-              {formatDisplayDate(record.date)}
+        <div className="flex items-start justify-between gap-2 pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800/80">
+          <div className="flex flex-col min-w-0">
+            <span className="font-black text-sm sm:text-base text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-tight">
+              {formatShortDate(record.date)}
             </span>
             <span
-              className={`text-[10px] sm:text-[11px] px-1 sm:px-1.5 py-0.5 rounded-md font-semibold whitespace-nowrap ${isWeekend
-                ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400'
-                : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
-                }`}
+              className={`text-[10px] sm:text-[11px] font-semibold mt-0.5 ${
+                isWeekend
+                  ? 'text-amber-600 dark:text-amber-400 font-bold'
+                  : 'text-slate-400 dark:text-slate-400'
+              }`}
             >
               {dayOfWeek}
             </span>

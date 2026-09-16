@@ -115,10 +115,10 @@ export const IncomeFormModal: React.FC<IncomeFormModalProps> = ({
 
   const statusOptions: Array<{ id: DayStatus | 'auto'; label: string }> = [
     { id: 'auto', label: language === 'vi' ? 'Tự động tính' : 'Auto Calculate' },
-    { id: 'success', label: 'Success' },
-    { id: 'processing', label: 'Processing' },
-    { id: 'failed', label: 'Failed' },
-    { id: 'not_started', label: 'Not Started' },
+    { id: 'processing', label: t.common.processing },
+    { id: 'success', label: t.common.success },
+    { id: 'failed', label: t.common.failed },
+    { id: 'not_started', label: t.common.notStarted },
   ];
 
   return (

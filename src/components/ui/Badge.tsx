@@ -3,6 +3,8 @@ import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { DayStatus } from '../../types/income';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: 'default' | 'success' | 'failed' | 'processing' | 'not_started' | 'outline';
   size?: 'sm' | 'md' | 'lg';
@@ -21,6 +23,7 @@ export const Badge: React.FC<BadgeProps> = ({
   children,
   ...props
 }) => {
+  const { t } = useLanguage();
   const effectiveVariant = status || variant;
 
   const baseStyles =
@@ -73,10 +76,10 @@ export const Badge: React.FC<BadgeProps> = ({
   };
 
   const statusLabels: Record<DayStatus, string> = {
-    success: 'Success',
-    failed: 'Failed',
-    processing: 'Processing',
-    not_started: 'Not Started',
+    success: t.common.success,
+    failed: t.common.failed,
+    processing: t.common.processing,
+    not_started: t.common.notStarted,
   };
 
   const interactiveStyles = interactive

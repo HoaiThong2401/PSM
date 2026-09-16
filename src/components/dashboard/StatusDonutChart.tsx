@@ -11,16 +11,19 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import type { CycleSummary } from '../../types/income';
 import { PieChart as PieIcon } from 'lucide-react';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface StatusDonutChartProps {
   summary: CycleSummary;
 }
 
 export const StatusDonutChart: React.FC<StatusDonutChartProps> = ({ summary }) => {
+  const { t } = useLanguage();
   const data = [
-    { name: 'Success', value: summary.successDays, color: '#10b981' },
-    { name: 'Processing', value: summary.processingDays, color: '#0ea5e9' },
-    { name: 'Failed', value: summary.failedDays, color: '#f43f5e' },
-    { name: 'Not started', value: summary.notStartedDays, color: '#64748b' },
+    { name: t.common.success, value: summary.successDays, color: '#10b981' },
+    { name: t.common.processing, value: summary.processingDays, color: '#0ea5e9' },
+    { name: t.common.failed, value: summary.failedDays, color: '#f43f5e' },
+    { name: t.common.notStarted, value: summary.notStartedDays, color: '#64748b' },
   ].filter((item) => item.value > 0);
 
   const CustomTooltip = ({ active, payload }: any) => {

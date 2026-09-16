@@ -5,7 +5,7 @@ import { IncomeFilterBar } from '../components/income/IncomeFilterBar';
 import { IncomeTableView } from '../components/income/IncomeTableView';
 import { IncomeCardTimeline } from '../components/income/IncomeCardTimeline';
 import { exportToExcel } from '../utils/exportUtils';
-import { formatDisplayDate } from '../utils/dateUtils';
+import { formatDisplayDate, getTodayISO } from '../utils/dateUtils';
 
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -30,7 +30,15 @@ export const IncomeManagementPage: React.FC<IncomeManagementPageProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<DayStatus | 'all'>('all');
   const [sortMode, setSortMode] = useState<IncomeSortMode>('processing_first');
-  const [viewMode, setViewMode] = useState<'table' | 'timeline'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'timeline'>(() => {
+    const saved = localStorage.getItem('psm_income_view_mode');
+    return saved === 'table' || saved === 'timeline' ? saved : 'timeline';
+  });
+
+  const handleViewModeChange = (mode: 'table' | 'timeline') => {
+    setViewMode(mode);
+    localStorage.setItem('psm_income_view_mode', mode);
+  };
 
   const processedRecords = useMemo(() => {
     const filtered = cycleRecords.filter((record) => {
@@ -47,21 +55,31 @@ export const IncomeManagementPage: React.FC<IncomeManagementPageProps> = ({
       return true;
     });
 
+    const todayISO = getTodayISO();
+    const processingRecord = filtered.find((r) => r.status === 'processing');
+    const pivotDate = processingRecord ? processingRecord.date : todayISO;
+
     return [...filtered].sort((a, b) => {
       if (sortMode === 'processing_first') {
-        const getGroupRank = (status: DayStatus) => {
-          if (status === 'processing') return 1;
-          if (status !== 'not_started') return 2;
+        const getGroup = (r: IncomeRecord) => {
+          if (r.status === 'processing' || r.date === pivotDate) return 1;
+          if (r.date < pivotDate) return 2;
           return 3;
         };
 
-        const rankA = getGroupRank(a.status);
-        const rankB = getGroupRank(b.status);
+        const groupA = getGroup(a);
+        const groupB = getGroup(b);
 
-        if (rankA !== rankB) {
-          return rankA - rankB;
+        if (groupA !== groupB) {
+          return groupA - groupB;
         }
-        return b.date.localeCompare(a.date);
+
+        // Nhóm 1: Ngày đang diễn ra (Processing / Hôm nay: 16)
+        if (groupA === 1) return 0;
+        // Nhóm 2: Các ngày đã qua trong chu kỳ (giảm dần từ hôm qua trở về trước: 15, 14, 13...)
+        if (groupA === 2) return b.date.localeCompare(a.date);
+        // Nhóm 3: Các ngày tiếp theo trong chu kỳ (tăng dần: 17, 18, 19... 25)
+        return a.date.localeCompare(b.date);
       }
       if (sortMode === 'recently_updated') {
         const timeA = a.updatedAt || a.createdAt || a.date;
@@ -105,7 +123,7 @@ export const IncomeManagementPage: React.FC<IncomeManagementPageProps> = ({
         sortMode={sortMode}
         onSortModeChange={setSortMode}
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
+        onViewModeChange={handleViewModeChange}
         onExportCSV={handleExportCSV}
         onOpenAddModal={() => onOpenAddModal()}
       />
