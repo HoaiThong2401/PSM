@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { UserSettings } from '../types/settings';
-import { DEFAULT_USER_SETTINGS } from '../types/settings';
+import type { UserSettings, NotificationPreferences } from '../types/settings';
+import { DEFAULT_USER_SETTINGS, DEFAULT_NOTIFICATION_PREFS } from '../types/settings';
 import { storageService } from '../services/storageService';
 import { supabaseSettingsService } from '../services/supabaseSettingsService';
 import { isSupabaseConfigured } from '../services/supabaseClient';
@@ -18,8 +18,19 @@ export function useSettings(userId?: string) {
       try {
         const cloudSettings = await supabaseSettingsService.fetchSettings(userId!);
         if (isMounted) {
-          setSettings(cloudSettings);
-          storageService.saveSettings(cloudSettings);
+          const currentLocal = storageService.getSettings();
+          const mergedNotificationPrefs: NotificationPreferences = {
+            ...DEFAULT_NOTIFICATION_PREFS,
+            ...(currentLocal.notificationPrefs || {}),
+            ...(cloudSettings.notificationPrefs || {}),
+          };
+          const mergedSettings: UserSettings = {
+            ...currentLocal,
+            ...cloudSettings,
+            notificationPrefs: mergedNotificationPrefs,
+          };
+          setSettings(mergedSettings);
+          storageService.saveSettings(mergedSettings);
         }
       } catch (err) {
         console.warn('Lỗi tải cài đặt từ Supabase:', err);

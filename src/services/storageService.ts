@@ -41,6 +41,10 @@ export const storageService = {
       return {
         ...DEFAULT_USER_SETTINGS,
         ...parsed,
+        notificationPrefs: {
+          ...(DEFAULT_USER_SETTINGS.notificationPrefs || {}),
+          ...(parsed.notificationPrefs || {}),
+        },
         cycleStartDay: cycleDay >= 2 && cycleDay <= 28 ? cycleDay : 26,
       };
     } catch (e) {
