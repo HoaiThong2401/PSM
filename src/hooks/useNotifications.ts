@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type { AppNotification } from '../types/notification';
 import type { IncomeRecord, IncomeCycle, CycleSummary } from '../types/income';
 import type { UserSettings } from '../types/settings';
@@ -10,6 +10,8 @@ import {
   unsubscribeFromWebPush,
   getExistingPushSubscription,
 } from '../services/webPushService';
+import { supabaseNotificationService } from '../services/supabaseNotificationService';
+import { isSupabaseConfigured } from '../services/supabaseClient';
 
 const STORAGE_PREFIX = 'daily_income_notifs_';
 const TRIGGERED_PREFIX = 'daily_income_notif_triggered_';
@@ -23,27 +25,20 @@ interface UseNotificationsProps {
 }
 
 export function useNotifications({
-  userId = 'default_user',
+  userId,
   records,
   currentCycle,
   cycleSummary,
   settings,
 }: UseNotificationsProps) {
   const { t } = useLanguage();
-  const storageKey = `${STORAGE_PREFIX}${userId}`;
-  const triggeredKey = `${TRIGGERED_PREFIX}${userId}`;
+  const effectiveUserId = userId || 'default_user';
+  const storageKey = `${STORAGE_PREFIX}${effectiveUserId}`;
+  const triggeredKey = `${TRIGGERED_PREFIX}${effectiveUserId}`;
+  const isSupabaseLive = isSupabaseConfigured() && Boolean(userId) && userId !== 'demo_user' && userId !== 'default_user';
 
-  const [notifications, setNotifications] = useState<AppNotification[]>(() => {
-    try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    } catch {
-      // ignore
-    }
-    return [];
-  });
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const isLoadedRef = useRef(false);
 
   const [permission, setPermission] = useState<NotificationPermission>(() => {
     if (typeof window !== 'undefined' && 'Notification' in window) {
@@ -61,14 +56,45 @@ export function useNotifications({
     });
   }, []);
 
-  // Save notifications to localStorage on change
+  // 1. Tải thông báo từ Supabase hoặc LocalStorage khi userId thay đổi
   useEffect(() => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(notifications));
-    } catch {
-      // ignore
+    let isMounted = true;
+
+    async function loadNotifications() {
+      // Đọc trước từ LocalStorage để render tức thì
+      try {
+        const saved = localStorage.getItem(storageKey);
+        if (saved && isMounted) {
+          setNotifications(JSON.parse(saved));
+        }
+      } catch {
+        // ignore
+      }
+
+      // Nếu có Supabase, tải từ Cloud về để đồng bộ đa thiết bị
+      if (isSupabaseLive && userId) {
+        try {
+          const cloudNotifs = await supabaseNotificationService.fetchNotifications(userId);
+          if (isMounted && cloudNotifs && cloudNotifs.length > 0) {
+            setNotifications(cloudNotifs);
+            localStorage.setItem(storageKey, JSON.stringify(cloudNotifs));
+          }
+        } catch (err) {
+          console.warn('Lỗi tải thông báo Supabase:', err);
+        }
+      }
+
+      if (isMounted) {
+        isLoadedRef.current = true;
+      }
     }
-  }, [notifications, storageKey]);
+
+    loadNotifications();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId, storageKey, isSupabaseLive]);
 
   // Request browser push notification permission and register Web Push
   const requestPushPermission = useCallback(async () => {
@@ -79,27 +105,27 @@ export function useNotifications({
       const perm = await Notification.requestPermission();
       setPermission(perm);
       if (perm === 'granted') {
-        const res = await subscribeToWebPush(userId);
+        const res = await subscribeToWebPush(effectiveUserId);
         setIsPushSubscribed(res.success);
       }
       return perm;
     } catch {
       return 'denied';
     }
-  }, [userId]);
+  }, [effectiveUserId]);
 
   // Toggle Web Push Subscription
   const togglePushSubscription = useCallback(async () => {
     if (isPushSubscribed) {
-      const res = await unsubscribeFromWebPush(userId);
+      const res = await unsubscribeFromWebPush(effectiveUserId);
       if (res.success) setIsPushSubscribed(false);
       return false;
     } else {
-      const res = await subscribeToWebPush(userId);
+      const res = await subscribeToWebPush(effectiveUserId);
       if (res.success) setIsPushSubscribed(true);
       return res.success;
     }
-  }, [isPushSubscribed, userId]);
+  }, [isPushSubscribed, effectiveUserId]);
 
   // Dispatch browser notification if permitted (supports mobile PWA via Service Worker)
   const sendPushNotification = useCallback(
@@ -145,10 +171,9 @@ export function useNotifications({
           const triggeredRaw = localStorage.getItem(triggeredKey);
           const triggeredList: string[] = triggeredRaw ? JSON.parse(triggeredRaw) : [];
           if (triggeredList.includes(dedupKey)) {
-            return; // Already triggered
+            return; // Đã kích hoạt hôm nay rồi, không tạo lại nữa
           }
           triggeredList.push(dedupKey);
-          // Keep list bounded to last 200 keys
           if (triggeredList.length > 200) triggeredList.splice(0, triggeredList.length - 200);
           localStorage.setItem(triggeredKey, JSON.stringify(triggeredList));
         } catch {
@@ -163,33 +188,96 @@ export function useNotifications({
         read: false,
       };
 
-      setNotifications((prev) => [newNotif, ...prev.slice(0, 49)]); // max 50 items
+      setNotifications((prev) => {
+        const next = [newNotif, ...prev.filter((n) => n.id !== newNotif.id).slice(0, 49)];
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(next));
+        } catch {
+          // ignore
+        }
+        return next;
+      });
+
       sendPushNotification(newNotif.title, newNotif.message);
+
+      // Lưu lên Supabase nếu có kết nối
+      if (isSupabaseLive && userId) {
+        supabaseNotificationService.insertNotification(userId, newNotif, dedupKey).catch(console.error);
+      }
     },
-    [sendPushNotification, triggeredKey]
+    [sendPushNotification, triggeredKey, storageKey, isSupabaseLive, userId]
   );
 
   // Mark a single notification as read
-  const markAsRead = useCallback((id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
-  }, []);
+  const markAsRead = useCallback(
+    (id: string) => {
+      setNotifications((prev) => {
+        const next = prev.map((n) => (n.id === id ? { ...n, read: true } : n));
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(next));
+        } catch {
+          // ignore
+        }
+        return next;
+      });
+
+      if (isSupabaseLive && userId) {
+        supabaseNotificationService.markAsRead(userId, id).catch(console.error);
+      }
+    },
+    [storageKey, isSupabaseLive, userId]
+  );
 
   // Mark all notifications as read
   const markAllAsRead = useCallback(() => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }, []);
+    setNotifications((prev) => {
+      const next = prev.map((n) => ({ ...n, read: true }));
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
 
-  // Remove one notification
-  const removeNotification = useCallback((id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  }, []);
+    if (isSupabaseLive && userId) {
+      supabaseNotificationService.markAllAsRead(userId).catch(console.error);
+    }
+  }, [storageKey, isSupabaseLive, userId]);
 
-  // Clear all notifications
+  // Remove one notification permanently
+  const removeNotification = useCallback(
+    (id: string) => {
+      setNotifications((prev) => {
+        const next = prev.filter((n) => n.id !== id);
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(next));
+        } catch {
+          // ignore
+        }
+        return next;
+      });
+
+      if (isSupabaseLive && userId) {
+        supabaseNotificationService.deleteNotification(userId, id).catch(console.error);
+      }
+    },
+    [storageKey, isSupabaseLive, userId]
+  );
+
+  // Clear all notifications permanently
   const clearAllNotifications = useCallback(() => {
     setNotifications([]);
-  }, []);
+    try {
+      localStorage.removeItem(storageKey);
+    } catch {
+      // ignore
+    }
+
+    if (isSupabaseLive && userId) {
+      supabaseNotificationService.clearAll(userId).catch(console.error);
+    }
+  }, [storageKey, isSupabaseLive, userId]);
 
   // Count unread
   const unreadCount = useMemo(
@@ -199,6 +287,8 @@ export function useNotifications({
 
   // Evaluate smart notification triggers
   useEffect(() => {
+    if (!isLoadedRef.current) return;
+
     const prefs = settings?.notificationPrefs || DEFAULT_NOTIFICATION_PREFS;
     if (prefs.enabled === false) return;
 
