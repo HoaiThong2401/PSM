@@ -44,9 +44,6 @@ CREATE POLICY "Users can delete their own push subscriptions"
     ON public.push_subscriptions FOR DELETE
     USING (auth.uid() = user_id);
 
--- 5. Bổ sung cột lưu cài đặt thông báo cá nhân vào user_settings
-ALTER TABLE public.user_settings ADD COLUMN IF NOT EXISTS notification_prefs JSONB DEFAULT '{}'::jsonb;
-
 -- ==============================================================================
 -- TỰ ĐỘNG GỬI LỜI NHẮC ĐỊNH KỲ (07:00 & 18:00) VỚI SUPABASE PG_CRON
 -- (Cần bật extension pg_cron và pg_net trong Supabase Dashboard -> Extensions)

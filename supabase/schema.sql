@@ -34,11 +34,8 @@ CREATE TABLE IF NOT EXISTS public.user_settings (
     cycle_type TEXT NOT NULL DEFAULT 'monthly' CHECK (cycle_type IN ('monthly', 'biweekly', 'weekly', 'custom')),
     custom_cycle_start_day INTEGER NOT NULL DEFAULT 1 CHECK (custom_cycle_start_day BETWEEN 1 AND 31),
     theme TEXT NOT NULL DEFAULT 'system' CHECK (theme IN ('light', 'dark', 'system')),
-    notification_prefs JSONB DEFAULT '{}'::jsonb,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
-
-ALTER TABLE public.user_settings ADD COLUMN IF NOT EXISTS notification_prefs JSONB DEFAULT '{}'::jsonb;
 
 -- 4. Tạo Indexes tối ưu tốc độ truy vấn
 CREATE INDEX IF NOT EXISTS idx_income_records_user_date ON public.income_records(user_id, date DESC);
