@@ -246,8 +246,6 @@ export interface TranslationDictionary {
     backgroundPushActive: string;
     backgroundPushInactive: string;
     notificationsOff: string;
-    testNotificationBtn: string;
-    sendingTest: string;
     activateWebPushBannerTitle: string;
     activateWebPushBannerDesc: string;
     activateNow: string;
@@ -271,10 +269,6 @@ export interface TranslationDictionary {
     backgroundPushEnabledBadge: string;
     enableBackgroundPush: string;
     enableNow: string;
-    testTitle: string;
-    testMessage: string;
-    testSuccessToast: string;
-    testPermissionErrorToast: string;
     masterEnabledToast: string;
     masterDisabledToast: string;
     pushSubscribedSuccessToast: string;

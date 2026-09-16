@@ -29,7 +29,6 @@ interface HeaderProps {
   isPushSubscribed?: boolean;
   onRequestPushPermission: () => Promise<NotificationPermission>;
   onTogglePush?: () => Promise<boolean | void>;
-  onTestPush?: () => Promise<boolean>;
   onMarkAsRead: (id: string) => void;
   onMarkAllAsRead: () => void;
   onRemoveNotification: (id: string) => void;
@@ -51,7 +50,6 @@ export const Header: React.FC<HeaderProps> = ({
   isPushSubscribed,
   onRequestPushPermission,
   onTogglePush,
-  onTestPush,
   onMarkAsRead,
   onMarkAllAsRead,
   onRemoveNotification,
@@ -138,7 +136,6 @@ export const Header: React.FC<HeaderProps> = ({
             isPushSubscribed={isPushSubscribed}
             onRequestPushPermission={onRequestPushPermission}
             onTogglePush={onTogglePush}
-            onTestPush={onTestPush}
             onMarkAsRead={onMarkAsRead}
             onMarkAllAsRead={onMarkAllAsRead}
             onRemoveNotification={onRemoveNotification}

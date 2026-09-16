@@ -24,7 +24,6 @@ import {
   getExistingPushSubscription,
   subscribeToWebPush,
   unsubscribeFromWebPush,
-  sendTestLocalNotification,
 } from '../../services/webPushService';
 
 interface NotificationSettingsCardProps {
@@ -42,7 +41,6 @@ export const NotificationSettingsCard: React.FC<NotificationSettingsCardProps> =
 
   const [isPushSubscribed, setIsPushSubscribed] = useState(false);
   const [isPushLoading, setIsPushLoading] = useState(false);
-  const [isTesting, setIsTesting] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Custom Time Picker Modal State
@@ -113,21 +111,6 @@ export const NotificationSettingsCard: React.FC<NotificationSettingsCardProps> =
       }
     }
     setIsPushLoading(false);
-  };
-
-  const handleTestNotification = async () => {
-    setIsTesting(true);
-    const success = await sendTestLocalNotification(
-      t.notifications.testTitle,
-      t.notifications.testMessage
-    );
-    setTimeout(() => setIsTesting(false), 800);
-
-    if (success) {
-      toast({ type: 'success', title: t.notifications.testSuccessToast });
-    } else {
-      toast({ type: 'error', title: t.notifications.testPermissionErrorToast });
-    }
   };
 
   const openMorningTimePicker = () => {
@@ -213,19 +196,8 @@ export const NotificationSettingsCard: React.FC<NotificationSettingsCardProps> =
           </div>
         </div>
 
-        {/* Master Switch & Actions */}
+        {/* Master Switch */}
         <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
-          <button
-            type="button"
-            onClick={handleTestNotification}
-            disabled={isTesting}
-            className="px-2.5 py-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 rounded-xl transition-all cursor-pointer border border-indigo-200/60 dark:border-indigo-800/60 flex items-center gap-1.5 active:scale-95 shadow-2xs"
-            title={t.notifications.testNotificationBtn}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{isTesting ? t.notifications.sendingTest : t.notifications.testNotificationBtn}</span>
-          </button>
-
           {/* Master Toggle Switch */}
           <label className="relative inline-flex items-center cursor-pointer select-none">
             <input

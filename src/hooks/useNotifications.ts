@@ -9,7 +9,6 @@ import {
   subscribeToWebPush,
   unsubscribeFromWebPush,
   getExistingPushSubscription,
-  sendTestLocalNotification,
 } from '../services/webPushService';
 
 const STORAGE_PREFIX = 'daily_income_notifs_';
@@ -101,14 +100,6 @@ export function useNotifications({
       return res.success;
     }
   }, [isPushSubscribed, userId]);
-
-  // Trigger test background push
-  const triggerTestPush = useCallback(async () => {
-    return await sendTestLocalNotification(
-      '🔔 Thử nghiệm thông báo DailyIncome',
-      'Hệ thống thông báo nền đã sẵn sàng nhận tin kể cả khi tắt app!'
-    );
-  }, []);
 
   // Dispatch browser notification if permitted (supports mobile PWA via Service Worker)
   const sendPushNotification = useCallback(
@@ -362,7 +353,6 @@ export function useNotifications({
     isPushSubscribed,
     requestPushPermission,
     togglePushSubscription,
-    triggerTestPush,
     markAsRead,
     markAllAsRead,
     removeNotification,

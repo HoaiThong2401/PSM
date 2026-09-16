@@ -22,7 +22,6 @@ interface NotificationDropdownProps {
   isPushSubscribed?: boolean;
   onRequestPushPermission: () => Promise<NotificationPermission>;
   onTogglePush?: () => Promise<boolean | void>;
-  onTestPush?: () => Promise<boolean>;
   onMarkAsRead: (id: string) => void;
   onMarkAllAsRead: () => void;
   onRemoveNotification: (id: string) => void;
@@ -37,7 +36,6 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   isPushSubscribed,
   onRequestPushPermission,
   onTogglePush,
-  onTestPush,
   onMarkAsRead,
   onMarkAllAsRead,
   onRemoveNotification,
@@ -46,7 +44,6 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
 }) => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [isTesting, setIsTesting] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -63,14 +60,6 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
-
-  const handleTestClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!onTestPush) return;
-    setIsTesting(true);
-    await onTestPush();
-    setTimeout(() => setIsTesting(false), 1000);
-  };
 
   const handleNotificationClick = (notif: AppNotification) => {
     onMarkAsRead(notif.id);
@@ -198,14 +187,6 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span>{t.notifications.backgroundPushEnabledBadge}</span>
               </div>
-              <button
-                type="button"
-                onClick={handleTestClick}
-                disabled={isTesting}
-                className="px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/50 hover:bg-emerald-200 rounded-md transition-colors cursor-pointer"
-              >
-                {isTesting ? t.notifications.sendingTest : t.notifications.testNotificationBtn}
-              </button>
             </div>
           )}
 

@@ -56,7 +56,6 @@ function AppContent() {
     isPushSubscribed,
     requestPushPermission,
     togglePushSubscription,
-    triggerTestPush,
     markAsRead,
     markAllAsRead,
     removeNotification,
@@ -151,7 +150,6 @@ function AppContent() {
       isPushSubscribed={isPushSubscribed}
       onRequestPushPermission={requestPushPermission}
       onTogglePush={togglePushSubscription}
-      onTestPush={triggerTestPush}
       onMarkAsRead={markAsRead}
       onMarkAllAsRead={markAllAsRead}
       onRemoveNotification={removeNotification}
