@@ -53,7 +53,10 @@ function AppContent() {
     notifications,
     unreadCount,
     permission,
+    isPushSubscribed,
     requestPushPermission,
+    togglePushSubscription,
+    triggerTestPush,
     markAsRead,
     markAllAsRead,
     removeNotification,
@@ -64,6 +67,7 @@ function AppContent() {
     records,
     currentCycle,
     cycleSummary,
+    settings,
   });
 
   if (authLoading) {
@@ -144,7 +148,10 @@ function AppContent() {
       notifications={notifications}
       unreadCount={unreadCount}
       permission={permission}
+      isPushSubscribed={isPushSubscribed}
       onRequestPushPermission={requestPushPermission}
+      onTogglePush={togglePushSubscription}
+      onTestPush={triggerTestPush}
       onMarkAsRead={markAsRead}
       onMarkAllAsRead={markAllAsRead}
       onRemoveNotification={removeNotification}

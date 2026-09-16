@@ -19,7 +19,10 @@ interface NotificationDropdownProps {
   notifications: AppNotification[];
   unreadCount: number;
   permission: NotificationPermission;
+  isPushSubscribed?: boolean;
   onRequestPushPermission: () => Promise<NotificationPermission>;
+  onTogglePush?: () => Promise<boolean | void>;
+  onTestPush?: () => Promise<boolean>;
   onMarkAsRead: (id: string) => void;
   onMarkAllAsRead: () => void;
   onRemoveNotification: (id: string) => void;
@@ -31,7 +34,10 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   notifications,
   unreadCount,
   permission,
+  isPushSubscribed,
   onRequestPushPermission,
+  onTogglePush,
+  onTestPush,
   onMarkAsRead,
   onMarkAllAsRead,
   onRemoveNotification,
@@ -40,6 +46,7 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
 }) => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -56,6 +63,14 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
+
+  const handleTestClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onTestPush) return;
+    setIsTesting(true);
+    await onTestPush();
+    setTimeout(() => setIsTesting(false), 1000);
+  };
 
   const handleNotificationClick = (notif: AppNotification) => {
     onMarkAsRead(notif.id);
@@ -160,21 +175,36 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
             </div>
           </div>
 
-          {/* Optional Push Notification Permission Prompt */}
-          {permission === 'default' && (
+          {/* Web Push Status / Permission Banner */}
+          {permission !== 'granted' || !isPushSubscribed ? (
             <div className="px-4 py-2.5 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border-b border-indigo-100/50 dark:border-indigo-900/40 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
                 <Sparkles className="w-4 h-4 text-indigo-500 shrink-0" />
                 <span className="text-xs text-slate-700 dark:text-slate-300 font-medium truncate">
-                  {t.notifications.enablePush}
+                  {t.notifications.enableBackgroundPush}
                 </span>
               </div>
               <button
                 type="button"
-                onClick={onRequestPushPermission}
+                onClick={onTogglePush || onRequestPushPermission}
                 className="px-2.5 py-1 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 rounded-lg shrink-0 transition-transform cursor-pointer shadow-xs"
               >
-                Bật / Enable
+                {t.notifications.enableNow}
+              </button>
+            </div>
+          ) : (
+            <div className="px-3 py-1.5 bg-emerald-50/60 dark:bg-emerald-950/20 border-b border-emerald-100/60 dark:border-emerald-900/30 flex items-center justify-between gap-2 text-[11px]">
+              <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>{t.notifications.backgroundPushEnabledBadge}</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleTestClick}
+                disabled={isTesting}
+                className="px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/50 hover:bg-emerald-200 rounded-md transition-colors cursor-pointer"
+              >
+                {isTesting ? t.notifications.sendingTest : t.notifications.testNotificationBtn}
               </button>
             </div>
           )}

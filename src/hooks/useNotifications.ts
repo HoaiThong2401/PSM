@@ -1,8 +1,16 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { AppNotification } from '../types/notification';
 import type { IncomeRecord, IncomeCycle, CycleSummary } from '../types/income';
+import type { UserSettings } from '../types/settings';
+import { DEFAULT_NOTIFICATION_PREFS } from '../types/settings';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getTodayISO } from '../utils/dateUtils';
+import {
+  subscribeToWebPush,
+  unsubscribeFromWebPush,
+  getExistingPushSubscription,
+  sendTestLocalNotification,
+} from '../services/webPushService';
 
 const STORAGE_PREFIX = 'daily_income_notifs_';
 const TRIGGERED_PREFIX = 'daily_income_notif_triggered_';
@@ -12,6 +20,7 @@ interface UseNotificationsProps {
   records: IncomeRecord[];
   currentCycle?: IncomeCycle | null;
   cycleSummary?: CycleSummary;
+  settings?: UserSettings;
 }
 
 export function useNotifications({
@@ -19,6 +28,7 @@ export function useNotifications({
   records,
   currentCycle,
   cycleSummary,
+  settings,
 }: UseNotificationsProps) {
   const { t } = useLanguage();
   const storageKey = `${STORAGE_PREFIX}${userId}`;
@@ -43,6 +53,15 @@ export function useNotifications({
     return 'default';
   });
 
+  const [isPushSubscribed, setIsPushSubscribed] = useState<boolean>(false);
+
+  // Check existing Web Push subscription
+  useEffect(() => {
+    getExistingPushSubscription().then((sub) => {
+      setIsPushSubscribed(Boolean(sub));
+    });
+  }, []);
+
   // Save notifications to localStorage on change
   useEffect(() => {
     try {
@@ -52,7 +71,7 @@ export function useNotifications({
     }
   }, [notifications, storageKey]);
 
-  // Request browser push notification permission
+  // Request browser push notification permission and register Web Push
   const requestPushPermission = useCallback(async () => {
     if (typeof window === 'undefined' || !('Notification' in window)) {
       return 'denied';
@@ -60,10 +79,35 @@ export function useNotifications({
     try {
       const perm = await Notification.requestPermission();
       setPermission(perm);
+      if (perm === 'granted') {
+        const res = await subscribeToWebPush(userId);
+        setIsPushSubscribed(res.success);
+      }
       return perm;
     } catch {
       return 'denied';
     }
+  }, [userId]);
+
+  // Toggle Web Push Subscription
+  const togglePushSubscription = useCallback(async () => {
+    if (isPushSubscribed) {
+      const res = await unsubscribeFromWebPush(userId);
+      if (res.success) setIsPushSubscribed(false);
+      return false;
+    } else {
+      const res = await subscribeToWebPush(userId);
+      if (res.success) setIsPushSubscribed(true);
+      return res.success;
+    }
+  }, [isPushSubscribed, userId]);
+
+  // Trigger test background push
+  const triggerTestPush = useCallback(async () => {
+    return await sendTestLocalNotification(
+      '🔔 Thử nghiệm thông báo DailyIncome',
+      'Hệ thống thông báo nền đã sẵn sàng nhận tin kể cả khi tắt app!'
+    );
   }, []);
 
   // Dispatch browser notification if permitted (supports mobile PWA via Service Worker)
@@ -164,45 +208,63 @@ export function useNotifications({
 
   // Evaluate smart notification triggers
   useEffect(() => {
+    const prefs = settings?.notificationPrefs || DEFAULT_NOTIFICATION_PREFS;
+    if (prefs.enabled === false) return;
+
     const today = getTodayISO();
     const now = new Date();
-    const currentHour = now.getHours();
+    const currentMinutesOfDay = now.getHours() * 60 + now.getMinutes();
 
-    // 1. Morning Shift Reminder (~7h: 6:00 - 11:59)
-    if (currentHour >= 6 && currentHour < 12) {
-      addNotification(
-        {
-          type: 'morning_shift',
-          title: t.notifications.morningShiftTitle,
-          message: t.notifications.morningShiftMsg,
-          actionTab: 'dashboard',
-        },
-        `morning_shift_${today}`
-      );
-    }
+    // Helper: Parse 'HH:mm' to minutes from midnight
+    const parseTimeToMinutes = (timeStr?: string, defaultMinutes = 420) => {
+      if (!timeStr) return defaultMinutes;
+      const [h, m] = timeStr.split(':').map(Number);
+      if (isNaN(h)) return defaultMinutes;
+      return h * 60 + (isNaN(m) ? 0 : m);
+    };
 
-    // 2. Daily Missing Entry Reminder (Evening: >= 18:00)
-    if (currentHour >= 18) {
-      const todayRecord = records.find((r) => r.date === today);
-      const hasIncomeLogged =
-        todayRecord && (todayRecord.cash > 0 || todayRecord.totalCash > 0 || todayRecord.totalIncome > 0);
+    const morningTargetMinutes = parseTimeToMinutes(prefs.morningShiftTime, 7 * 60); // default 07:00 (420m)
+    const eveningTargetMinutes = parseTimeToMinutes(prefs.missingEntryTime, 18 * 60); // default 18:00 (1080m)
 
-      if (!hasIncomeLogged) {
+    // 1. Morning Shift Reminder (Từ giờ đã cấu hình đến 12:00 trưa)
+    if (prefs.morningShiftEnabled !== false) {
+      if (currentMinutesOfDay >= morningTargetMinutes && currentMinutesOfDay < 12 * 60) {
         addNotification(
           {
-            type: 'daily_missing_entry',
-            title: t.notifications.missingEntryTitle,
-            message: t.notifications.missingEntryMsg,
-            actionTab: 'income',
-            actionDate: today,
+            type: 'morning_shift',
+            title: t.notifications.morningShiftTitle,
+            message: t.notifications.morningShiftMsg,
+            actionTab: 'dashboard',
           },
-          `missing_entry_${today}`
+          `morning_shift_${today}`
         );
       }
     }
 
+    // 2. Daily Missing Entry Reminder (Từ giờ chiều đã cấu hình đến hết ngày)
+    if (prefs.missingEntryEnabled !== false) {
+      if (currentMinutesOfDay >= eveningTargetMinutes) {
+        const todayRecord = records.find((r) => r.date === today);
+        const hasIncomeLogged =
+          todayRecord && (todayRecord.cash > 0 || todayRecord.totalCash > 0 || todayRecord.totalIncome > 0);
+
+        if (!hasIncomeLogged) {
+          addNotification(
+            {
+              type: 'daily_missing_entry',
+              title: t.notifications.missingEntryTitle,
+              message: t.notifications.missingEntryMsg,
+              actionTab: 'income',
+              actionDate: today,
+            },
+            `missing_entry_${today}`
+          );
+        }
+      }
+    }
+
     // 3. Cycle Ending Alerts (Last 3 days of cycle)
-    if (currentCycle) {
+    if (prefs.cycleEndingEnabled !== false && currentCycle) {
       const todayDate = new Date(today);
       const endDate = new Date(currentCycle.endDate);
       const diffTime = endDate.getTime() - todayDate.getTime();
@@ -211,8 +273,8 @@ export function useNotifications({
       if (remainingDays >= 0 && remainingDays <= 3) {
         const daysText = remainingDays === 0 ? 'cuối cùng / last' : remainingDays.toString();
 
-        // Morning Alert (6:00 - 11:59)
-        if (currentHour >= 6 && currentHour < 12) {
+        // Morning Alert
+        if (currentMinutesOfDay >= morningTargetMinutes && currentMinutesOfDay < 12 * 60) {
           addNotification(
             {
               type: 'cycle_ending_soon',
@@ -225,8 +287,8 @@ export function useNotifications({
           );
         }
 
-        // Night Alert (19:00 - 23:59)
-        if (currentHour >= 19) {
+        // Night Alert (từ 19:00)
+        if (currentMinutesOfDay >= 19 * 60) {
           addNotification(
             {
               type: 'cycle_ending_soon',
@@ -243,6 +305,7 @@ export function useNotifications({
 
     // 4. Goal Achieved Congratulations (Cycle Target)
     if (
+      prefs.goalAchievedEnabled !== false &&
       currentCycle &&
       cycleSummary &&
       cycleSummary.targetCashTotal > 0 &&
@@ -261,20 +324,22 @@ export function useNotifications({
     }
 
     // 5. Daily Goal Achieved (Today)
-    const todayRecord = records.find((r) => r.date === today);
-    if (todayRecord && todayRecord.status === 'success') {
-      addNotification(
-        {
-          type: 'goal_achieved',
-          title: t.notifications.dailyGoalAchievedTitle.replace('{date}', today),
-          message: t.notifications.dailyGoalAchievedMsg,
-          actionTab: 'income',
-          actionDate: today,
-        },
-        `goal_achieved_day_${today}`
-      );
+    if (prefs.goalAchievedEnabled !== false) {
+      const todayRecord = records.find((r) => r.date === today);
+      if (todayRecord && todayRecord.status === 'success') {
+        addNotification(
+          {
+            type: 'goal_achieved',
+            title: t.notifications.dailyGoalAchievedTitle.replace('{date}', today),
+            message: t.notifications.dailyGoalAchievedMsg,
+            actionTab: 'income',
+            actionDate: today,
+          },
+          `goal_achieved_day_${today}`
+        );
+      }
     }
-  }, [records, currentCycle, cycleSummary, t, addNotification]);
+  }, [records, currentCycle, cycleSummary, settings, t, addNotification]);
 
   // Manually trigger a celebration notification upon saving a successful record
   const notifyDailySuccess = useCallback(
@@ -294,7 +359,10 @@ export function useNotifications({
     notifications,
     unreadCount,
     permission,
+    isPushSubscribed,
     requestPushPermission,
+    togglePushSubscription,
+    triggerTestPush,
     markAsRead,
     markAllAsRead,
     removeNotification,

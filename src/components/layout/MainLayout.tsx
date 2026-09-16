@@ -24,7 +24,10 @@ interface MainLayoutProps {
   notifications: AppNotification[];
   unreadCount: number;
   permission: NotificationPermission;
+  isPushSubscribed?: boolean;
   onRequestPushPermission: () => Promise<NotificationPermission>;
+  onTogglePush?: () => Promise<boolean | void>;
+  onTestPush?: () => Promise<boolean>;
   onMarkAsRead: (id: string) => void;
   onMarkAllAsRead: () => void;
   onRemoveNotification: (id: string) => void;
@@ -46,7 +49,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   notifications,
   unreadCount,
   permission,
+  isPushSubscribed,
   onRequestPushPermission,
+  onTogglePush,
+  onTestPush,
   onMarkAsRead,
   onMarkAllAsRead,
   onRemoveNotification,
@@ -101,7 +107,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           notifications={notifications}
           unreadCount={unreadCount}
           permission={permission}
+          isPushSubscribed={isPushSubscribed}
           onRequestPushPermission={onRequestPushPermission}
+          onTogglePush={onTogglePush}
+          onTestPush={onTestPush}
           onMarkAsRead={onMarkAsRead}
           onMarkAllAsRead={onMarkAllAsRead}
           onRemoveNotification={onRemoveNotification}

@@ -7,6 +7,7 @@ import { formatNumber, parseVNDInput } from '../utils/currency';
 import { exportSettingsToExcel } from '../utils/exportUtils';
 import { useToast } from '../components/ui/Toast';
 import { PwaInstallCard } from '../components/settings/PwaInstallCard';
+import { NotificationSettingsCard } from '../components/settings/NotificationSettingsCard';
 import { Sliders, Moon, Sun, Download, RotateCcw, Globe, Settings2 } from 'lucide-react';
 
 import { useLanguage } from '../contexts/LanguageContext';
@@ -137,6 +138,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
         </form>
       </Card>
+
+      {/* Streamlined Notification Settings Card with Toggles & Direct Time Pickers */}
+      <NotificationSettingsCard
+        settings={settings}
+        onUpdateSettings={onUpdateSettings}
+      />
 
       {/* Theme & Language Card */}
       <Card className="p-6 space-y-5">

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'daily-income-pwa-v1';
+const CACHE_NAME = 'daily-income-pwa-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -55,20 +55,94 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
+// ==============================================================================
+// WEB PUSH NOTIFICATION HANDLER (Chạy ngầm khi tắt app / đóng trình duyệt)
+// ==============================================================================
+self.addEventListener('push', (event) => {
+  let data = {};
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch {
+      data = {
+        title: 'DailyIncome',
+        body: event.data.text(),
+      };
+    }
+  } else {
+    data = {
+      title: 'DailyIncome',
+      body: 'Bạn có lời nhắc thu nhập mới!',
+    };
+  }
+
+  const title = data.title || 'DailyIncome';
+  const options = {
+    body: data.body || data.message || 'Hãy kiểm tra và ghi nhận thu nhập hôm nay của bạn.',
+    icon: data.icon || '/favicon.svg',
+    badge: '/favicon.svg',
+    tag: data.tag || `daily-income-${Date.now()}`,
+    renotify: true,
+    vibrate: [200, 100, 200, 100, 200],
+    requireInteraction: true,
+    data: {
+      url: data.url || '/',
+      actionDate: data.actionDate,
+      actionTab: data.actionTab,
+    },
+    actions: [
+      { action: 'open_app', title: 'Mở ứng dụng' },
+      { action: 'close', title: 'Bỏ qua' }
+    ]
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// ==============================================================================
+// XỬ LÝ KHI NGƯỜI DÙNG NHẤP VÀO THÔNG BÁO TRÊN MÀN HÌNH KHÓA / THANH THÔNG BÁO
+// ==============================================================================
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
+  if (event.action === 'close') {
+    return;
+  }
+
+  const targetUrl = event.notification.data?.url || '/';
+
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      if (clientList.length > 0) {
-        let client = clientList[0];
-        for (let i = 0; i < clientList.length; i++) {
-          if (clientList[i].focused) {
-            client = clientList[i];
-          }
+      // Nếu đã có tab/app đang mở, chuyển tiêu điểm sang tab đó
+      for (let i = 0; i < clientList.length; i++) {
+        const client = clientList[i];
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          return client.focus();
         }
-        return client.focus();
       }
-      return self.clients.openWindow('/');
+      // Nếu chưa có tab nào mở, mở cửa sổ mới
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(targetUrl);
+      }
     })
   );
+});
+
+// ==============================================================================
+// LẮNG NGHE ĐIỀU KHIỂN TỪ REACT CLIENT
+// ==============================================================================
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SCHEDULE_NOTIFICATION') {
+    const { title, body, delayMs } = event.data;
+    if (delayMs && delayMs > 0) {
+      setTimeout(() => {
+        self.registration.showNotification(title, {
+          body,
+          icon: '/favicon.svg',
+          badge: '/favicon.svg',
+          tag: 'scheduled-reminder',
+        });
+      }, delayMs);
+    }
+  }
 });
