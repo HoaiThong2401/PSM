@@ -58,11 +58,6 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
               size="md"
               className="shrink-0"
             />
-            {isGoalReached && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-500/30 animate-pulse shrink-0">
-                <Sparkles className="w-3 h-3" /> {t.dashboard.goalAchievedPill}
-              </span>
-            )}
           </div>
 
           <div>
@@ -73,8 +68,8 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
               {isGoalReached
                 ? `${t.dashboard.goalReachedDesc} ${formatVND(actualCash)}.`
                 : remaining > 0
-                ? `${t.dashboard.goalMissingDesc} ${formatVND(remaining)}.`
-                : t.dashboard.goalStartDesc}
+                  ? `${t.dashboard.goalMissingDesc} ${formatVND(remaining)}.`
+                  : t.dashboard.goalStartDesc}
             </p>
           </div>
 
@@ -121,9 +116,8 @@ export const TodayGoalHero: React.FC<TodayGoalHeroProps> = ({
                 cx="50"
                 cy="50"
                 r="40"
-                className={`stroke-current transition-all duration-1000 ease-out ${
-                  isGoalReached ? 'text-emerald-500' : 'text-indigo-600 dark:text-indigo-400'
-                }`}
+                className={`stroke-current transition-all duration-1000 ease-out ${isGoalReached ? 'text-emerald-500' : 'text-indigo-600 dark:text-indigo-400'
+                  }`}
                 strokeWidth="10"
                 strokeDasharray="251.2"
                 strokeDashoffset={251.2 - (251.2 * percentage) / 100}

@@ -56,7 +56,6 @@ export const en: TranslationDictionary = {
     actualCash: 'Actual Cash',
     todayTips: 'Total Tips',
     totalTodayIncome: "Total Income",
-    goalAchievedPill: 'Goal Achieved!',
     completed: 'Complete',
     achieved: 'Achieved',
     celebrateBtn: 'Congrats! Update More',

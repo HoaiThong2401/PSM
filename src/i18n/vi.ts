@@ -56,7 +56,6 @@ export const vi: TranslationDictionary = {
     actualCash: 'Tiền mặt thực tế',
     todayTips: 'Tổng tiền bo',
     totalTodayIncome: 'Tổng thu nhập',
-    goalAchievedPill: 'Đạt chỉ tiêu!',
     completed: 'Hoàn thành',
     achieved: 'Đạt được',
     celebrateBtn: 'Chúc mừng! Cập nhật thêm',

@@ -56,7 +56,6 @@ export interface TranslationDictionary {
     actualCash: string;
     todayTips: string;
     totalTodayIncome: string;
-    goalAchievedPill: string;
     completed: string;
     achieved: string;
     celebrateBtn: string;
