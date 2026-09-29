@@ -16,6 +16,23 @@ export function getCycleRange(year: number, month: number, cutoffDay: number = 2
   return { startDate, endDate };
 }
 
+export function getCurrentCycleId(cycleStartDay: number = 26, date: Date = new Date()): string {
+  const safeCutoff = typeof cycleStartDay === 'number' && cycleStartDay >= 2 && cycleStartDay <= 28 ? cycleStartDay : 26;
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  if (day >= safeCutoff) {
+    month += 1;
+    if (month > 12) {
+      month = 1;
+      year += 1;
+    }
+  }
+
+  return `cycle_${year}_${month}`;
+}
+
 export function useCycleFilter(records: IncomeRecord[], settings: UserSettings) {
   const availableCycles = useMemo<IncomeCycle[]>(() => {
     const cycleMap = new Map<string, IncomeCycle>();
@@ -94,35 +111,19 @@ export function useCycleFilter(records: IncomeRecord[], settings: UserSettings) 
   }, [records, settings.cycleStartDay]);
 
   const defaultCycleId = useMemo(() => {
-    const now = new Date();
-    return `cycle_${now.getFullYear()}_${now.getMonth() + 1}`;
-  }, []);
+    return getCurrentCycleId(settings.cycleStartDay);
+  }, [settings.cycleStartDay]);
 
   const [selectedCycleId, setSelectedCycleId] = useState<string>(defaultCycleId);
-  const hasInitializedRef = useRef(false);
+  const prevCycleStartDayRef = useRef(settings.cycleStartDay);
 
-  // Chỉ tự động chọn chu kỳ có dữ liệu 1 lần duy nhất khi khởi tạo lần đầu
+  // Khi cài đặt ngày bắt đầu chu kỳ thay đổi, cập nhật chu kỳ mặc định
   useEffect(() => {
-    if (!hasInitializedRef.current && records.length > 0 && availableCycles.length > 0) {
-      const currentHasData = records.some((r) => {
-        const c = availableCycles.find((cy) => cy.id === selectedCycleId);
-        return c && r.date >= c.startDate && r.date <= c.endDate && (r.cash > 0 || r.baseSalary > 0);
-      });
-
-      if (!currentHasData) {
-        for (const cycle of availableCycles) {
-          const hasData = records.some(
-            (r) => r.date >= cycle.startDate && r.date <= cycle.endDate && (r.cash > 0 || r.baseSalary > 0)
-          );
-          if (hasData) {
-            setSelectedCycleId(cycle.id);
-            break;
-          }
-        }
-      }
-      hasInitializedRef.current = true;
+    if (prevCycleStartDayRef.current !== settings.cycleStartDay) {
+      prevCycleStartDayRef.current = settings.cycleStartDay;
+      setSelectedCycleId(getCurrentCycleId(settings.cycleStartDay));
     }
-  }, [records, availableCycles, selectedCycleId]);
+  }, [settings.cycleStartDay]);
 
   const currentCycle = useMemo(() => {
     return availableCycles.find((c) => c.id === selectedCycleId) || availableCycles[0];

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Calendar, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 import type { IncomeCycle } from '../../types/income';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { formatDisplayDate } from '../../utils/dateUtils';
+import { formatDisplayDate, getTodayISO } from '../../utils/dateUtils';
 
 interface CycleSelectorProps {
   cycles: IncomeCycle[];
@@ -65,10 +65,7 @@ export const CycleSelector: React.FC<CycleSelectorProps> = ({
 
   if (!currentCycle) return null;
 
-  const now = new Date();
-  const currentMonth = now.getMonth() + 1;
-  const currentYear = now.getFullYear();
-
+  const todayISO = getTodayISO();
   const cycleTitle = `${t.header.cyclePrefix} ${String(currentCycle.month).padStart(2, '0')}/${currentCycle.year}`;
 
   return (
@@ -126,7 +123,7 @@ export const CycleSelector: React.FC<CycleSelectorProps> = ({
           <div className="max-h-64 sm:max-h-72 overflow-y-auto space-y-1 pr-0.5 custom-scrollbar">
             {cycles.map((c) => {
               const isSelected = c.id === selectedCycleId;
-              const isCurrent = c.month === currentMonth && c.year === currentYear;
+              const isCurrent = Boolean(c.startDate && c.endDate && c.startDate <= todayISO && todayISO <= c.endDate);
               const formattedRange = c.startDate && c.endDate
                 ? `${formatDisplayDate(c.startDate)} - ${formatDisplayDate(c.endDate)}`
                 : '';
